@@ -1,4 +1,6 @@
 /// <reference types="react" />
+import * as react_native from "react-native"
+import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 import { PerspectiveCamera, Vector3, Vector2, Matrix4 } from "three"
 
 declare function createControls(): {
@@ -22,49 +24,55 @@ declare function createControls(): {
     rotateSpeed: number
     enablePan: boolean
     panSpeed: number
+    height: number
+    width: number
     onChange: (event: typeof this$1) => void
   }
   functions: {
     update: () => void
-    addPointer(event: PointerEvent): void
-    removePointer(event: PointerEvent): void
-    trackPointer(event: PointerEvent): void
-    getSecondPointerPosition(event: PointerEvent): Vector2
+    addPointer(event: GestureResponderEvent): void
+    removePointer(event: GestureResponderEvent): void
+    trackPointer(event: GestureResponderEvent): void
+    getSecondPointerPosition(event: GestureResponderEvent): Vector2
     handleTouchStartRotate(): void
     handleTouchStartDolly(): void
     handleTouchStartPan(): void
     handleTouchStartDollyPan(): void
-    onTouchStart(event: PointerEvent): void
+    onTouchStart(event: GestureResponderEvent): void
     rotateLeft(angle: number): void
     rotateUp(angle: number): void
-    handleTouchMoveRotate(event: PointerEvent): void
+    handleTouchMoveRotate(event: GestureResponderEvent): void
     dollyOut(dollyScale: number): void
-    handleTouchMoveDolly(event: PointerEvent): void
+    handleTouchMoveDolly(event: GestureResponderEvent): void
     panLeft(distance: number, objectMatrix: Matrix4): void
     panUp(distance: number, objectMatrix: Matrix4): void
     pan(deltaX: number, deltaY: number): void
-    handleTouchMovePan(event: PointerEvent): void
-    handleTouchMoveDollyPan(event: PointerEvent): void
-    handleTouchMoveDollyRotate(event: PointerEvent): void
-    onTouchMove(event: PointerEvent): void
+    handleTouchMovePan(event: GestureResponderEvent): void
+    handleTouchMoveDollyPan(event: GestureResponderEvent): void
+    handleTouchMoveDollyRotate(event: GestureResponderEvent): void
+    onTouchMove(event: GestureResponderEvent): void
   }
   events: {
-    onPointerDown(event: PointerEvent): void
-    onPointerCancel(event: PointerEvent): void
-    onPointerMove(event: PointerEvent): void
-    onPointerUp(event: PointerEvent): void
+    onLayout(event: LayoutChangeEvent): void
+    onStartShouldSetResponder(event: GestureResponderEvent): boolean
+    onResponderReject(event: GestureResponderEvent): void
+    onResponderMove(event: GestureResponderEvent): void
+    onResponderRelease(event: GestureResponderEvent): void
   }
 }
 declare type OrbitControlsProps = ReturnType<typeof createControls>["scope"]
 
-declare function useControls(): (
-  | {
-      onPointerDown(event: PointerEvent): void
-      onPointerCancel(event: PointerEvent): void
-      onPointerMove(event: PointerEvent): void
-      onPointerUp(event: PointerEvent): void
-    }
-  | ((props: OrbitControlsProps) => JSX.Element)
-)[]
+declare function useControls(): readonly [
+  (props: OrbitControlsProps) => JSX.Element,
+  {
+    onLayout(event: react_native.LayoutChangeEvent): void
+    onStartShouldSetResponder(
+      event: react_native.GestureResponderEvent
+    ): boolean
+    onResponderReject(event: react_native.GestureResponderEvent): void
+    onResponderMove(event: react_native.GestureResponderEvent): void
+    onResponderRelease(event: react_native.GestureResponderEvent): void
+  }
+]
 
 export { useControls as default }

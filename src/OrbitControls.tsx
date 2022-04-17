@@ -6,7 +6,7 @@ import {
   Vector2,
   Vector3,
 } from "three"
-import { Dimensions } from "react-native"
+import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 
 const EPSILON = 0.000001
 
@@ -37,7 +37,7 @@ export function createControls() {
     maxZoom: Infinity,
 
     // How far you can orbit vertically, upper and lower limits.
-    // Range is 0 to Math.PI radians.
+    // Range is 0 to PI radians.
     minPolarAngle: 0,
     maxPolarAngle: Math.PI,
 
@@ -59,11 +59,14 @@ export function createControls() {
     enablePan: true,
     panSpeed: 1.0,
 
+    height: 0,
+    width: 0,
+
     onChange: (event: typeof this) => {},
   }
 
   const internals = {
-    pointers: [] as PointerEvent[],
+    pointers: [] as GestureResponderEvent[],
     pointerPositions: {} as { [key: string]: Vector2 },
 
     rotateStart: new Vector2(),
@@ -86,59 +89,71 @@ export function createControls() {
   }
 
   const functions = {
-    addPointer(event: PointerEvent) {
+    addPointer(event: GestureResponderEvent) {
       internals.pointers.push(event)
     },
 
-    removePointer(event: PointerEvent) {
-      delete internals.pointerPositions[event.pointerId]
+    removePointer(event: GestureResponderEvent) {
+      delete internals.pointerPositions[event.nativeEvent.identifier]
 
       for (let i = 0; i < internals.pointers.length; i++) {
-        if (internals.pointers[i].pointerId === event.pointerId) {
+        if (
+          internals.pointers[i].nativeEvent.identifier ===
+          event.nativeEvent.identifier
+        ) {
           internals.pointers.splice(i, 1)
           return
         }
       }
     },
 
-    trackPointer(event: PointerEvent) {
-      let position = internals.pointerPositions[event.pointerId]
+    trackPointer(event: GestureResponderEvent) {
+      let position = internals.pointerPositions[event.nativeEvent.identifier]
 
       if (position === undefined) {
         position = new Vector2()
-        internals.pointerPositions[event.pointerId] = position
+        internals.pointerPositions[event.nativeEvent.identifier] = position
       }
 
-      position.set(event.pageX, event.pageY)
+      position.set(event.nativeEvent.locationX, event.nativeEvent.locationY)
     },
 
-    getSecondPointerPosition(event: PointerEvent) {
+    getSecondPointerPosition(event: GestureResponderEvent) {
       const pointer =
-        event.pointerId === internals.pointers[0].pointerId
+        event.nativeEvent.identifier ===
+        internals.pointers[0].nativeEvent.identifier
           ? internals.pointers[1]
           : internals.pointers[0]
-      return internals.pointerPositions[pointer.pointerId]
+      return internals.pointerPositions[pointer.nativeEvent.identifier]
     },
 
     handleTouchStartRotate() {
       if (internals.pointers.length == 1) {
         internals.rotateStart.set(
-          internals.pointers[0].pageX,
-          internals.pointers[0].pageY
+          internals.pointers[0].nativeEvent.locationX,
+          internals.pointers[0].nativeEvent.locationY
         )
       } else {
         const x =
-          0.5 * (internals.pointers[0].pageX + internals.pointers[1].pageX)
+          0.5 *
+          (internals.pointers[0].nativeEvent.locationX +
+            internals.pointers[1].nativeEvent.locationX)
         const y =
-          0.5 * (internals.pointers[0].pageY + internals.pointers[1].pageY)
+          0.5 *
+          (internals.pointers[0].nativeEvent.locationY +
+            internals.pointers[1].nativeEvent.locationY)
 
         internals.rotateStart.set(x, y)
       }
     },
 
     handleTouchStartDolly() {
-      const dx = internals.pointers[0].pageX - internals.pointers[1].pageX
-      const dy = internals.pointers[0].pageY - internals.pointers[1].pageY
+      const dx =
+        internals.pointers[0].nativeEvent.locationX -
+        internals.pointers[1].nativeEvent.locationX
+      const dy =
+        internals.pointers[0].nativeEvent.locationY -
+        internals.pointers[1].nativeEvent.locationY
       const distance = Math.sqrt(dx * dx + dy * dy)
 
       internals.dollyStart.set(0, distance)
@@ -147,14 +162,18 @@ export function createControls() {
     handleTouchStartPan() {
       if (internals.pointers.length === 1) {
         internals.panStart.set(
-          internals.pointers[0].pageX,
-          internals.pointers[0].pageY
+          internals.pointers[0].nativeEvent.locationX,
+          internals.pointers[0].nativeEvent.locationY
         )
       } else {
         const x =
-          0.5 * (internals.pointers[0].pageX + internals.pointers[1].pageX)
+          0.5 *
+          (internals.pointers[0].nativeEvent.locationX +
+            internals.pointers[1].nativeEvent.locationX)
         const y =
-          0.5 * (internals.pointers[0].pageY + internals.pointers[1].pageY)
+          0.5 *
+          (internals.pointers[0].nativeEvent.locationY +
+            internals.pointers[1].nativeEvent.locationY)
 
         internals.panStart.set(x, y)
       }
@@ -165,7 +184,7 @@ export function createControls() {
       if (scope.enablePan) this.handleTouchStartPan()
     },
 
-    onTouchStart(event: PointerEvent) {
+    onTouchStart(event: GestureResponderEvent) {
       this.trackPointer(event)
 
       switch (internals.pointers.length) {
@@ -196,13 +215,16 @@ export function createControls() {
       internals.sphericalDelta.phi -= angle
     },
 
-    handleTouchMoveRotate(event: PointerEvent) {
+    handleTouchMoveRotate(event: GestureResponderEvent) {
       if (internals.pointers.length === 1) {
-        internals.rotateEnd.set(event.pageX, event.pageY)
+        internals.rotateEnd.set(
+          event.nativeEvent.locationX,
+          event.nativeEvent.locationY
+        )
       } else {
         const position = this.getSecondPointerPosition(event)
-        const x = 0.5 * (event.pageX + position.x)
-        const y = 0.5 * (event.pageY + position.y)
+        const x = 0.5 * (event.nativeEvent.locationX + position.x)
+        const y = 0.5 * (event.nativeEvent.locationY + position.y)
         internals.rotateEnd.set(x, y)
       }
 
@@ -211,14 +233,8 @@ export function createControls() {
         .multiplyScalar(scope.rotateSpeed)
 
       // yes, height
-      this.rotateLeft(
-        (2 * Math.PI * internals.rotateDelta.x) /
-          Dimensions.get("window").height
-      )
-      this.rotateUp(
-        (2 * Math.PI * internals.rotateDelta.y) /
-          Dimensions.get("window").height
-      )
+      this.rotateLeft((2 * Math.PI * internals.rotateDelta.x) / scope.height)
+      this.rotateUp((2 * Math.PI * internals.rotateDelta.y) / scope.height)
 
       internals.rotateStart.copy(internals.rotateEnd)
     },
@@ -227,10 +243,10 @@ export function createControls() {
       internals.scale /= dollyScale
     },
 
-    handleTouchMoveDolly(event: PointerEvent) {
+    handleTouchMoveDolly(event: GestureResponderEvent) {
       const position = this.getSecondPointerPosition(event)
-      const dx = event.pageX - position.x
-      const dy = event.pageY - position.y
+      const dx = event.nativeEvent.locationX - position.x
+      const dy = event.nativeEvent.locationY - position.y
       const distance = Math.sqrt(dx * dx + dy * dy)
 
       internals.dollyEnd.set(0, distance)
@@ -270,22 +286,25 @@ export function createControls() {
 
       // we use only clientHeight here so aspect ratio does not distort speed
       this.panLeft(
-        (2 * deltaX * targetDistance) / Dimensions.get("window").height,
+        (2 * deltaX * targetDistance) / scope.height,
         scope.camera.matrix
       )
       this.panUp(
-        (2 * deltaY * targetDistance) / Dimensions.get("window").height,
+        (2 * deltaY * targetDistance) / scope.height,
         scope.camera.matrix
       )
     },
 
-    handleTouchMovePan(event: PointerEvent) {
+    handleTouchMovePan(event: GestureResponderEvent) {
       if (internals.pointers.length === 1) {
-        internals.panEnd.set(event.pageX, event.pageY)
+        internals.panEnd.set(
+          event.nativeEvent.locationX,
+          event.nativeEvent.locationY
+        )
       } else {
         const position = this.getSecondPointerPosition(event)
-        const x = 0.5 * (event.pageX + position.x)
-        const y = 0.5 * (event.pageY + position.y)
+        const x = 0.5 * (event.nativeEvent.locationX + position.x)
+        const y = 0.5 * (event.nativeEvent.locationY + position.y)
         internals.panEnd.set(x, y)
       }
 
@@ -296,17 +315,17 @@ export function createControls() {
       internals.panStart.copy(internals.panEnd)
     },
 
-    handleTouchMoveDollyPan(event: PointerEvent) {
+    handleTouchMoveDollyPan(event: GestureResponderEvent) {
       if (scope.enableZoom) this.handleTouchMoveDolly(event)
       if (scope.enablePan) this.handleTouchMovePan(event)
     },
 
-    handleTouchMoveDollyRotate(event: PointerEvent) {
+    handleTouchMoveDollyRotate(event: GestureResponderEvent) {
       if (scope.enableZoom) this.handleTouchMoveDolly(event)
       if (scope.enableRotate) this.handleTouchMoveRotate(event)
     },
 
-    onTouchMove(event: PointerEvent) {
+    onTouchMove(event: GestureResponderEvent) {
       this.trackPointer(event)
 
       switch (scope.state) {
@@ -455,25 +474,30 @@ export function createControls() {
     },
 
     events: {
-      onPointerDown(event: PointerEvent) {
+      onLayout(event: LayoutChangeEvent) {},
+
+      onStartShouldSetResponder(event: GestureResponderEvent) {
         if (!scope.enabled) return
 
         functions.addPointer(event)
 
         functions.onTouchStart(event)
+
+        // See https://reactnative.dev/docs/gesture-responder-system
+        return true
       },
 
-      onPointerCancel(event: PointerEvent) {
+      onResponderReject(event: GestureResponderEvent) {
         functions.removePointer(event)
       },
 
-      onPointerMove(event: PointerEvent) {
+      onResponderMove(event: GestureResponderEvent) {
         if (scope.enabled && internals.pointers.length > 0) {
           functions.onTouchMove(event)
         }
       },
 
-      onPointerUp(event: PointerEvent) {
+      onResponderRelease(event: GestureResponderEvent) {
         functions.removePointer(event)
 
         scope.state = STATE.NONE
