@@ -29,8 +29,6 @@ export function createControls() {
 
     target: new Vector3(),
 
-    state: STATE.NONE,
-
     minDistance: 0,
     maxDistance: Infinity,
     minZoom: 0,
@@ -59,9 +57,6 @@ export function createControls() {
     enablePan: true,
     panSpeed: 1.0,
 
-    height: 0,
-    width: 0,
-
     onChange: (event: typeof this) => {},
   }
 
@@ -86,6 +81,11 @@ export function createControls() {
     scale: 1,
 
     zoomChanged: false,
+
+    state: STATE.NONE,
+
+    height: 0,
+    width: 0,
   }
 
   const functions = {
@@ -191,19 +191,19 @@ export function createControls() {
         case 1:
           if (!scope.enableRotate) return
           this.handleTouchStartRotate()
-          scope.state = STATE.TOUCH_ROTATE
+          internals.state = STATE.TOUCH_ROTATE
 
           break
 
         case 2:
           if (!scope.enableZoom && !scope.enablePan) return
           this.handleTouchStartDollyPan()
-          scope.state = STATE.TOUCH_DOLLY_PAN
+          internals.state = STATE.TOUCH_DOLLY_PAN
 
           break
 
         default:
-          scope.state = STATE.NONE
+          internals.state = STATE.NONE
       }
     },
 
@@ -233,8 +233,10 @@ export function createControls() {
         .multiplyScalar(scope.rotateSpeed)
 
       // yes, height
-      this.rotateLeft((2 * Math.PI * internals.rotateDelta.x) / scope.height)
-      this.rotateUp((2 * Math.PI * internals.rotateDelta.y) / scope.height)
+      this.rotateLeft(
+        (2 * Math.PI * internals.rotateDelta.x) / internals.height
+      )
+      this.rotateUp((2 * Math.PI * internals.rotateDelta.y) / internals.height)
 
       internals.rotateStart.copy(internals.rotateEnd)
     },
@@ -286,11 +288,11 @@ export function createControls() {
 
       // we use only clientHeight here so aspect ratio does not distort speed
       this.panLeft(
-        (2 * deltaX * targetDistance) / scope.height,
+        (2 * deltaX * targetDistance) / internals.height,
         scope.camera.matrix
       )
       this.panUp(
-        (2 * deltaY * targetDistance) / scope.height,
+        (2 * deltaY * targetDistance) / internals.height,
         scope.camera.matrix
       )
     },
@@ -328,7 +330,7 @@ export function createControls() {
     onTouchMove(event: GestureResponderEvent) {
       this.trackPointer(event)
 
-      switch (scope.state) {
+      switch (internals.state) {
         case STATE.TOUCH_ROTATE:
           if (!scope.enableRotate) return
           this.handleTouchMoveRotate(event)
@@ -354,7 +356,7 @@ export function createControls() {
           break
 
         default:
-          scope.state = STATE.NONE
+          internals.state = STATE.NONE
       }
     },
   }
@@ -500,7 +502,7 @@ export function createControls() {
       onResponderRelease(event: GestureResponderEvent) {
         functions.removePointer(event)
 
-        scope.state = STATE.NONE
+        internals.state = STATE.NONE
       },
     },
   }

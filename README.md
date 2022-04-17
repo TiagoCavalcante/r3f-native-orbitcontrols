@@ -1,15 +1,47 @@
-# react-library-template
+# r3f-native-orbitcontrols
 
-A template for seamlessly creating a ReactJS library with TypeScript
+OrbitControls for React Three Fiber in React Native
 
-## Using this template
+## Example
 
-![Screenshot of the GitHub page](https://user-images.githubusercontent.com/62714153/163733198-2f2d9abb-436c-4875-88cf-3176de60b842.png)
+```js
+import useControls from "r3f-native-orbitcontrols"
 
-## Quickstart
+function App() {
+  const [OrbitControl, events, camera] = useControls()
 
-1. `npm install`
-2. Customize the package.json file with the information about your project. Don't forget to change the license if you don't want MIT! Once a license is choosed it is hard to (legally) change it
-3. Replace the code from src/ with your code
-4. Add the files you want to delete after the build (if there are any) in rollup.config.js. Istead of deleting them you can just add to .gitignore
-5. Run `npm publish` and wait people to use your library
+  return (
+    <Show {...events}>
+      <Canvas camera={camera}>
+        <OrbitControls />
+      </Canvas>
+    </Show>
+  )
+}
+```
+
+## Options
+
+The `<OrbitControls />` element _may_ receive the following properties:
+
+| Property        |       Type        |                                     Description |
+| :-------------- | :---------------: | ----------------------------------------------: |
+| camera          | PerspectiveCamera |                                                 |
+| enabled         |      boolean      |                                                 |
+| target          |      Vector3      |                                                 |
+| minDistance     |      number       |                                                 |
+| maxDistance     |      number       |                                                 |
+| minZoom         |      number       |                                                 |
+| maxZoom         |      number       |                                                 |
+| minPolarAngle   |      number       |              how close you can orbit vertically |
+| maxPolarAngle   |      number       |                how far you can orbit vertically |
+| minAzimuthAngle |      number       |            how close you can orbit horizontally |
+| maxAzimuthAngle |      number       |              how far you can orbit horizontally |
+| dampingFactor   |      number       |                                  inertia factor |
+| enableZoom      |      boolean      |                                                 |
+| zoomSpeed       |      number       |                                                 |
+| enableRotate    |      boolean      |                                                 |
+| rotateSpeed     |      number       |                                                 |
+| enablePan       |      boolean      |                                                 |
+| panSpeed        |      number       |                                                 |
+| onChange        |  (event) => void  | receives an event with all the properties above |
