@@ -23,7 +23,7 @@ const STATE = {
 
 export function createControls() {
   const scope = {
-    camera: new PerspectiveCamera(75, 0, 0.1, 1000),
+    camera: new PerspectiveCamera(75, 0, 0.1, 1000) as PerspectiveCamera | null,
 
     enabled: true,
 
@@ -279,6 +279,7 @@ export function createControls() {
     },
 
     pan(deltaX: number, deltaY: number) {
+      if (!scope.camera) return
       const position = scope.camera.position
 
       let targetDistance = position.clone().sub(scope.target).length()
@@ -362,21 +363,25 @@ export function createControls() {
   }
 
   const update = (() => {
-    // so camera.up is the orbit axis
-    const quat = new Quaternion().setFromUnitVectors(
-      scope.camera.up,
-      new Vector3(0, 1, 0)
-    )
-    const quatInverse = quat.clone().invert()
-
     const lastPosition = new Vector3()
     const lastQuaternion = new Quaternion()
 
     const twoPI = 2 * Math.PI
 
-    const position = scope.camera.position
+    let position = null as Vector3 | null
 
     return () => {
+      if (!scope.camera) return
+
+      if (!position) position = scope.camera.position
+
+      // so camera.up is the orbit axis
+      const quat = new Quaternion().setFromUnitVectors(
+        scope.camera.up,
+        new Vector3(0, 1, 0)
+      )
+      const quatInverse = quat.clone().invert()
+
       const offset = position.clone().sub(scope.target)
 
       // rotate offset to "y-axis-is-up" space
