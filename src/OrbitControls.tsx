@@ -373,7 +373,7 @@ export function createControls() {
 
     let position = null as Vector3 | null
 
-    return () => {
+    return (invalidate: () => void) => {
       if (!scope.camera) return
 
       if (!position) position = scope.camera.position
@@ -466,6 +466,7 @@ export function createControls() {
         lastPosition.distanceToSquared(scope.camera.position) > EPSILON ||
         8 * (1 - lastQuaternion.dot(scope.camera.quaternion)) > EPSILON
       ) {
+        invalidate()
         scope.onChange({ target: scope })
 
         lastPosition.copy(scope.camera.position)

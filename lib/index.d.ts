@@ -48,7 +48,7 @@ declare function createControls(): {
     panSpeed: number
   }
   functions: {
-    update: () => void
+    update: (invalidate: () => void) => void
     addPointer(event: GestureResponderEvent): void
     removePointer(event: GestureResponderEvent): void
     trackPointer(event: GestureResponderEvent): void
@@ -97,6 +97,7 @@ declare function useControls(): readonly [
     onStartShouldSetResponder(
       event: react_native.GestureResponderEvent
     ): boolean
+    onMoveShouldSetResponder(event: react_native.GestureResponderEvent): boolean
     onResponderReject(event: react_native.GestureResponderEvent): void
     onResponderMove(event: react_native.GestureResponderEvent): void
     onResponderRelease(event: react_native.GestureResponderEvent): void

@@ -66,6 +66,7 @@ function Canvases() {
   return (
     <Show {...events}>
       <Canvas
+        // in this case, the frameloop must be "always" (the default)
         onCreated={(state) => {
           setCamera(state.camera)
         }}
