@@ -371,7 +371,7 @@ export function createControls() {
 
     const twoPI = 2 * Math.PI
 
-    let position = null as Vector3 | null
+    let position: Vector3
 
     return (invalidate: () => void) => {
       if (!scope.camera) return
