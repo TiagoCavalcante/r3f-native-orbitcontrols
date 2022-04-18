@@ -35,7 +35,7 @@ function Canvas2() {
   )
 }
 
-function Canvas2() {
+function Canvas3() {
   const [OrbitControls, events] = useControls()
   // or set the camera once the canvas is created
   const [camera, setCamera] = useState(null)

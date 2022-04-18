@@ -1,5 +1,9 @@
 import React, { useEffect } from "react"
-import { createControls, OrbitControlsProps } from "./OrbitControls"
+import {
+  OrbitControlsChangeEvent,
+  OrbitControlsProps,
+  createControls,
+} from "./OrbitControls"
 import { useFrame } from "@react-three/fiber"
 
 function OrbitControls({
@@ -29,3 +33,5 @@ export default function useControls() {
     controls.scope.camera,
   ] as const
 }
+
+export { OrbitControlsChangeEvent }

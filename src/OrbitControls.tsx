@@ -523,3 +523,7 @@ type Partial<T> = {
 export type OrbitControlsProps = Partial<
   ReturnType<typeof createControls>["scope"]
 >
+
+export type OrbitControlsChangeEvent = Parameters<
+  ReturnType<typeof createControls>["scope"]["onChange"]
+>[0]

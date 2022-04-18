@@ -85,6 +85,9 @@ declare type Partial<T> = {
 declare type OrbitControlsProps = Partial<
   ReturnType<typeof createControls>["scope"]
 >
+declare type OrbitControlsChangeEvent = Parameters<
+  ReturnType<typeof createControls>["scope"]["onChange"]
+>[0]
 
 declare function useControls(): readonly [
   (props: OrbitControlsProps) => JSX.Element,
@@ -100,4 +103,4 @@ declare function useControls(): readonly [
   three.PerspectiveCamera
 ]
 
-export { useControls as default }
+export { OrbitControlsChangeEvent, useControls as default }
