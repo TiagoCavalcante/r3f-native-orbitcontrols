@@ -74,6 +74,7 @@ declare function createControls(): {
   events: {
     onLayout(event: LayoutChangeEvent): void
     onStartShouldSetResponder(event: GestureResponderEvent): boolean
+    onMoveShouldSetResponder(event: GestureResponderEvent): boolean
     onResponderReject(event: GestureResponderEvent): void
     onResponderMove(event: GestureResponderEvent): void
     onResponderRelease(event: GestureResponderEvent): void

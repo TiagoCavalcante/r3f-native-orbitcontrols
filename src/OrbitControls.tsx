@@ -500,6 +500,11 @@ export function createControls() {
         return true
       },
 
+      onMoveShouldSetResponder(event: GestureResponderEvent) {
+        // See https://reactnative.dev/docs/gesture-responder-system
+        return true
+      },
+
       onResponderReject(event: GestureResponderEvent) {
         functions.removePointer(event)
       },
