@@ -22,8 +22,8 @@ const STATE = {
 }
 
 export function createControls() {
-  const scope = {
-    camera: new PerspectiveCamera(75, 0, 0.1, 1000) as PerspectiveCamera | null,
+  const partialScope = {
+    camera: new PerspectiveCamera(75, 0, 0.1, 1000),
 
     enabled: true,
 
@@ -56,8 +56,11 @@ export function createControls() {
 
     enablePan: true,
     panSpeed: 1.0,
+  }
 
-    onChange: (event: typeof this) => {},
+  const scope = {
+    ...partialScope,
+    onChange: (event: { target: typeof partialScope }) => {},
   }
 
   const internals = {
@@ -463,7 +466,7 @@ export function createControls() {
         lastPosition.distanceToSquared(scope.camera.position) > EPSILON ||
         8 * (1 - lastQuaternion.dot(scope.camera.quaternion)) > EPSILON
       ) {
-        scope.onChange(scope)
+        scope.onChange({ target: scope })
 
         lastPosition.copy(scope.camera.position)
         lastQuaternion.copy(scope.camera.quaternion)
