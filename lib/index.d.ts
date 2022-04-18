@@ -58,7 +58,12 @@ declare function createControls(): {
     onResponderRelease(event: GestureResponderEvent): void
   }
 }
-declare type OrbitControlsProps = ReturnType<typeof createControls>["scope"]
+declare type Partial<T> = {
+  [P in keyof T]?: T[P]
+}
+declare type OrbitControlsProps = Partial<
+  ReturnType<typeof createControls>["scope"]
+>
 
 declare function useControls(): readonly [
   (props: OrbitControlsProps) => JSX.Element,

@@ -513,4 +513,10 @@ export function createControls() {
   }
 }
 
-export type OrbitControlsProps = ReturnType<typeof createControls>["scope"]
+type Partial<T> = {
+  [P in keyof T]?: T[P]
+}
+
+export type OrbitControlsProps = Partial<
+  ReturnType<typeof createControls>["scope"]
+>
