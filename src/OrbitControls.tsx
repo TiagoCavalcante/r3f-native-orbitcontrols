@@ -366,17 +366,17 @@ export function createControls() {
   }
 
   const update = (() => {
+    const offset = new Vector3()
+
     const lastPosition = new Vector3()
     const lastQuaternion = new Quaternion()
 
     const twoPI = 2 * Math.PI
 
-    let position: Vector3
-
     return (invalidate: () => void) => {
       if (!scope.camera) return
 
-      if (!position) position = scope.camera.position
+      const position = scope.camera.position
 
       // so camera.up is the orbit axis
       const quat = new Quaternion().setFromUnitVectors(
@@ -385,7 +385,7 @@ export function createControls() {
       )
       const quatInverse = quat.clone().invert()
 
-      const offset = position.clone().sub(scope.target)
+      offset.copy(position).sub(scope.target)
 
       // rotate offset to "y-axis-is-up" space
       offset.applyQuaternion(quat)
