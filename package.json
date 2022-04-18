@@ -1,5 +1,5 @@
 {
-  "name": "react-library-template",
+  "name": "r3f-native-orbitcontrols",
   "version": "1.0.0",
   "description": "OrbitControls for React Three Fiber in React Native",
   "main": "lib/index.cjs.js",

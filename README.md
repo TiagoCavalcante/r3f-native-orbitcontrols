@@ -4,17 +4,17 @@ OrbitControls for React Three Fiber in React Native
 
 ## Example
 
-```js
+```jsx
 import useControls from "r3f-native-orbitcontrols"
 
 function Canvas1() {
-  const [OrbitControl, events] = useControls()
+  const [OrbitControls, events] = useControls()
 
   const camera = new PerspectiveCamera()
 
   return (
     <Show {...events}>
-      <Canvas>
+      <Canvas camera={camera}>
         {/* you can set the camera here */}
         <OrbitControls camera={camera} />
       </Canvas>
@@ -24,7 +24,7 @@ function Canvas1() {
 
 function Canvas2() {
   // or use the default camera
-  const [OrbitControl, events, camera] = useControls()
+  const [OrbitControls, events, camera] = useControls()
 
   return (
     <Show {...events}>
@@ -36,7 +36,7 @@ function Canvas2() {
 }
 
 function Canvas2() {
-  const [OrbitControl, events] = useControls()
+  const [OrbitControls, events] = useControls()
   // or set the camera once the canvas is created
   const [camera, setCamera] = useState(null)
 
@@ -54,7 +54,7 @@ function Canvas2() {
 }
 
 function Canvases() {
-  const [OrbitControl, events] = useControls()
+  const [OrbitControls, events] = useControls()
   const [camera, setCamera] = useState(null)
 
   const orbitControls = () => <OrbitControls camera={camera} />
