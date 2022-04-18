@@ -484,7 +484,10 @@ export function createControls() {
     },
 
     events: {
-      onLayout(event: LayoutChangeEvent) {},
+      onLayout(event: LayoutChangeEvent) {
+        internals.height = event.nativeEvent.layout.height
+        internals.width = event.nativeEvent.layout.width
+      },
 
       onStartShouldSetResponder(event: GestureResponderEvent) {
         if (!scope.enabled) return
