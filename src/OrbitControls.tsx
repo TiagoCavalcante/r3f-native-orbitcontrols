@@ -486,24 +486,24 @@ export function createControls() {
     },
 
     events: {
+      // Equivalent to componentDidMount.
       onLayout(event: LayoutChangeEvent) {
         internals.height = event.nativeEvent.layout.height
         internals.width = event.nativeEvent.layout.width
       },
 
+      // See https://reactnative.dev/docs/gesture-responder-system
       onStartShouldSetResponder(event: GestureResponderEvent) {
-        if (!scope.enabled) return
+        return scope.enabled
+      },
+
+      onMoveShouldSetResponder(event: GestureResponderEvent) {
+        if (!scope.enabled) return false
 
         functions.addPointer(event)
 
         functions.onTouchStart(event)
 
-        // See https://reactnative.dev/docs/gesture-responder-system
-        return true
-      },
-
-      onMoveShouldSetResponder(event: GestureResponderEvent) {
-        // See https://reactnative.dev/docs/gesture-responder-system
         return true
       },
 
