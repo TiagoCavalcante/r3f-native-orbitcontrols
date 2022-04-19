@@ -19,7 +19,11 @@ const config = [
         format: 'es',
       },
     ],
-    external: [...Object.keys(pkg.peerDependencies)],
+    external: [
+      ...Object.keys(pkg.peerDependencies),
+      // Rollup doesn't treat this as a peerDependency by default.
+      '@react-three/fiber/native',
+    ],
     plugins: [
       nodeResolve(),
       commonjs(),

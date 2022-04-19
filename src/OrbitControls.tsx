@@ -7,6 +7,7 @@ import {
   Vector3,
 } from "three"
 import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
+import { invalidate } from "@react-three/fiber/native"
 
 const EPSILON = 0.000001
 
@@ -338,25 +339,25 @@ export function createControls() {
         case STATE.TOUCH_ROTATE:
           if (!scope.enableRotate) return
           this.handleTouchMoveRotate(event)
-          this.update()
+          update()
           break
 
         case STATE.TOUCH_PAN:
           if (!scope.enablePan) return
           this.handleTouchMovePan(event)
-          this.update()
+          update()
           break
 
         case STATE.TOUCH_DOLLY_PAN:
           if (!scope.enableZoom && !scope.enablePan) return
           this.handleTouchMoveDollyPan(event)
-          this.update()
+          update()
           break
 
         case STATE.TOUCH_DOLLY_ROTATE:
           if (!scope.enableZoom && !scope.enableRotate) return
           this.handleTouchMoveDollyRotate(event)
-          this.update()
+          update()
           break
 
         default:
@@ -373,7 +374,7 @@ export function createControls() {
 
     const twoPI = 2 * Math.PI
 
-    return (invalidate: () => void) => {
+    return () => {
       if (!scope.camera) return
 
       const position = scope.camera.position

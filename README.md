@@ -54,10 +54,10 @@ function Canvas3() {
 }
 
 function Canvases() {
-  const [OrbitControls, events] = useControls()
+  // in this case the same camera must be used in all the canvases,
+  // not necessarily the default
+  const [OrbitControls, events, camera] = useControls()
   const [camera, setCamera] = useState(null)
-
-  const orbitControls = () => <OrbitControls camera={camera} />
 
   // you also can use the same OrbitControls for multiple canvases
   // creating and effect like the game
@@ -65,16 +65,11 @@ function Canvases() {
 
   return (
     <Show {...events}>
-      <Canvas
-        // in this case, the frameloop must be "always" (the default)
-        onCreated={(state) => {
-          setCamera(state.camera)
-        }}
-      >
-        <orbitControls />
+      <Canvas camera={camera}>
+        <OrbitControls />
       </Canvas>
-      <Canvas>
-        <orbitControls />
+      <Canvas camera={camera}>
+        <OrbitControls />
       </Canvas>
     </Show>
   )

@@ -48,7 +48,7 @@ declare function createControls(): {
     panSpeed: number
   }
   functions: {
-    update: (invalidate: () => void) => void
+    update: () => void
     addPointer(event: GestureResponderEvent): void
     removePointer(event: GestureResponderEvent): void
     trackPointer(event: GestureResponderEvent): void

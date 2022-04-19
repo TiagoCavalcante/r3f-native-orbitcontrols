@@ -4,18 +4,13 @@ import {
   OrbitControlsProps,
   createControls,
 } from "./OrbitControls"
-import { useFrame, useThree } from "@react-three/fiber"
+import { useFrame } from "@react-three/fiber/native"
 
 type OrbitControlsInternalProps = OrbitControlsProps & {
   controls: ReturnType<typeof createControls>
-  invalidate: () => void
 }
 
-function OrbitControls({
-  controls,
-  invalidate,
-  ...props
-}: OrbitControlsInternalProps) {
+function OrbitControls({ controls, ...props }: OrbitControlsInternalProps) {
   useEffect(() => {
     for (const prop in props) {
       ;(controls.scope[prop as keyof typeof controls.scope] as any) =
@@ -23,7 +18,7 @@ function OrbitControls({
     }
   }, [props])
 
-  useFrame(() => controls.functions.update(invalidate), -1)
+  useFrame(controls.functions.update, -1)
 
   return null as JSX.Element
 }
@@ -33,11 +28,7 @@ export default function useControls() {
 
   return [
     (props: OrbitControlsProps) => {
-      const invalidate = useThree((state) => state.invalidate)
-
-      return (
-        <OrbitControls controls={controls} invalidate={invalidate} {...props} />
-      )
+      return <OrbitControls controls={controls} {...props} />
     },
     controls.events,
     controls.scope.camera,
