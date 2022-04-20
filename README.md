@@ -11,11 +11,14 @@ function Canvas() {
   const [OrbitControls, events] = useControls()
 
   return (
-    <Show {...events}>
+    // If this isn't working check if you have set the size of the View.
+    // The easiest way to do it is use the full size, e.g.:
+    //   <View style={{ flex: 1 }} />
+    <View {...events}>
       <Canvas>
         <OrbitControls />
       </Canvas>
-    </Show>
+    </View>
   )
 }
 
@@ -29,14 +32,14 @@ function Canvases() {
   const camera = new PerspectiveCamera()
 
   return (
-    <Show {...events}>
+    <View {...events}>
       <Canvas camera={camera}>
         <OrbitControls />
       </Canvas>
       <Canvas camera={camera}>
         <OrbitControls />
       </Canvas>
-    </Show>
+    </View>
   )
 }
 ```
