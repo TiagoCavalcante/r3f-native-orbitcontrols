@@ -6,25 +6,16 @@ import {
   Vector2,
   Vector3,
 } from "three"
-import {
-  GestureResponderEvent,
-  LayoutChangeEvent,
-  PanResponder,
-} from "react-native"
+import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 import { invalidate } from "@react-three/fiber/native"
 import { useState } from "react"
 
 const EPSILON = 0.000001
 
 const STATE = {
-  NONE: -1,
-  ROTATE: 0,
-  DOLLY: 1,
-  PAN: 2,
-  TOUCH_ROTATE: 3,
-  TOUCH_PAN: 4,
-  TOUCH_DOLLY_PAN: 5,
-  TOUCH_DOLLY_ROTATE: 6,
+  NONE: 0,
+  ROTATE: 1,
+  DOLLY: 2,
 }
 
 export function createControls() {
@@ -72,9 +63,6 @@ export function createControls() {
   }
 
   const internals = {
-    pointers: [] as GestureResponderEvent[],
-    pointerPositions: {} as { [key: string]: Vector2 },
-
     rotateStart: new Vector2(),
     rotateEnd: new Vector2(),
     rotateDelta: new Vector2(),
@@ -97,117 +85,79 @@ export function createControls() {
   }
 
   const functions = {
-    addPointer(event: GestureResponderEvent) {
-      event.persist()
-      internals.pointers.push(event)
-    },
-
-    removePointer(event: GestureResponderEvent) {
-      delete internals.pointerPositions[event.nativeEvent.identifier]
-
-      for (let i = 0; i < internals.pointers.length; i++) {
-        if (
-          internals.pointers[i].nativeEvent.identifier ===
-          event.nativeEvent.identifier
-        ) {
-          internals.pointers.splice(i, 1)
-          return
-        }
-      }
-    },
-
-    trackPointer(event: GestureResponderEvent) {
-      let position = internals.pointerPositions[event.nativeEvent.identifier]
-
-      if (position === undefined) {
-        position = new Vector2()
-        internals.pointerPositions[event.nativeEvent.identifier] = position
-      }
-
-      position.set(event.nativeEvent.locationX, event.nativeEvent.locationY)
-    },
-
-    getSecondPointerPosition(event: GestureResponderEvent) {
-      const pointer =
-        event.nativeEvent.identifier ===
-        internals.pointers[0].nativeEvent.identifier
-          ? internals.pointers[1]
-          : internals.pointers[0]
-      return internals.pointerPositions[pointer.nativeEvent.identifier]
-    },
-
-    handleTouchStartRotate() {
-      if (internals.pointers.length == 1) {
+    handleTouchStartRotate(event: GestureResponderEvent) {
+      if (event.nativeEvent.touches.length === 1) {
         internals.rotateStart.set(
-          internals.pointers[0].nativeEvent.locationX,
-          internals.pointers[0].nativeEvent.locationY
+          event.nativeEvent.touches[0].locationX,
+          event.nativeEvent.touches[0].locationY
         )
-      } else {
+      } else if (event.nativeEvent.touches.length === 2) {
         const x =
           0.5 *
-          (internals.pointers[0].nativeEvent.locationX +
-            internals.pointers[1].nativeEvent.locationX)
+          (event.nativeEvent.touches[0].locationX +
+            event.nativeEvent.touches[1].locationX)
         const y =
           0.5 *
-          (internals.pointers[0].nativeEvent.locationY +
-            internals.pointers[1].nativeEvent.locationY)
+          (event.nativeEvent.touches[0].locationY +
+            event.nativeEvent.touches[1].locationY)
 
         internals.rotateStart.set(x, y)
       }
     },
 
-    handleTouchStartDolly() {
-      const dx =
-        internals.pointers[0].nativeEvent.locationX -
-        internals.pointers[1].nativeEvent.locationX
-      const dy =
-        internals.pointers[0].nativeEvent.locationY -
-        internals.pointers[1].nativeEvent.locationY
-      const distance = Math.sqrt(dx * dx + dy * dy)
+    handleTouchStartDolly(event: GestureResponderEvent) {
+      // Ensures this isn't undefined.
+      if (event.nativeEvent.touches.length === 2) {
+        const dx =
+          event.nativeEvent.touches[0].locationX -
+          event.nativeEvent.touches[1].locationX
+        const dy =
+          event.nativeEvent.touches[0].locationY -
+          event.nativeEvent.touches[1].locationY
+        const distance = Math.sqrt(dx * dx + dy * dy)
 
-      internals.dollyStart.set(0, distance)
+        internals.dollyStart.set(0, distance)
+      }
     },
 
-    handleTouchStartPan() {
-      if (internals.pointers.length === 1) {
+    handleTouchStartPan(event: GestureResponderEvent) {
+      if (event.nativeEvent.touches.length === 1) {
         internals.panStart.set(
-          internals.pointers[0].nativeEvent.locationX,
-          internals.pointers[0].nativeEvent.locationY
+          event.nativeEvent.touches[0].locationX,
+          event.nativeEvent.touches[0].locationY
         )
-      } else {
+      } else if (event.nativeEvent.touches.length === 2) {
         const x =
           0.5 *
-          (internals.pointers[0].nativeEvent.locationX +
-            internals.pointers[1].nativeEvent.locationX)
+          (event.nativeEvent.touches[0].locationX +
+            event.nativeEvent.touches[1].locationX)
         const y =
           0.5 *
-          (internals.pointers[0].nativeEvent.locationY +
-            internals.pointers[1].nativeEvent.locationY)
+          (event.nativeEvent.touches[0].locationY +
+            event.nativeEvent.touches[1].locationY)
 
         internals.panStart.set(x, y)
       }
     },
 
-    handleTouchStartDollyPan() {
-      if (scope.enableZoom) this.handleTouchStartDolly()
-      if (scope.enablePan) this.handleTouchStartPan()
+    handleTouchStartDollyPan(event: GestureResponderEvent) {
+      if (scope.enableZoom) this.handleTouchStartDolly(event)
+      if (scope.enablePan) this.handleTouchStartPan(event)
     },
 
     onTouchStart(event: GestureResponderEvent) {
-      this.trackPointer(event)
-
-      switch (internals.pointers.length) {
-        case 1:
+      switch (event.nativeEvent.touches.length) {
+        case STATE.ROTATE:
           if (!scope.enableRotate) return
-          this.handleTouchStartRotate()
-          internals.state = STATE.TOUCH_ROTATE
+          this.handleTouchStartRotate(event)
+          internals.state = STATE.ROTATE
 
           break
 
-        case 2:
+        case STATE.DOLLY:
           if (!scope.enableZoom && !scope.enablePan) return
-          this.handleTouchStartDollyPan()
-          internals.state = STATE.TOUCH_DOLLY_PAN
+          this.handleTouchStartDollyPan(event)
+          internals.state = STATE.DOLLY
 
           break
 
@@ -225,15 +175,20 @@ export function createControls() {
     },
 
     handleTouchMoveRotate(event: GestureResponderEvent) {
-      if (internals.pointers.length === 1) {
+      if (event.nativeEvent.touches.length === 1) {
         internals.rotateEnd.set(
           event.nativeEvent.locationX,
           event.nativeEvent.locationY
         )
-      } else {
-        const position = this.getSecondPointerPosition(event)
-        const x = 0.5 * (event.nativeEvent.locationX + position.x)
-        const y = 0.5 * (event.nativeEvent.locationY + position.y)
+      } else if (event.nativeEvent.touches.length === 2) {
+        const x =
+          0.5 *
+          (event.nativeEvent.touches[0].locationX +
+            event.nativeEvent.touches[1].locationX)
+        const y =
+          0.5 *
+          (event.nativeEvent.touches[0].locationY +
+            event.nativeEvent.touches[1].locationY)
         internals.rotateEnd.set(x, y)
       }
 
@@ -253,18 +208,27 @@ export function createControls() {
     },
 
     handleTouchMoveDolly(event: GestureResponderEvent) {
-      const position = this.getSecondPointerPosition(event)
-      const dx = event.nativeEvent.locationX - position.x
-      const dy = event.nativeEvent.locationY - position.y
-      const distance = Math.sqrt(dx * dx + dy * dy)
+      // Ensures this isn't undefined.
+      if (event.nativeEvent.touches.length === 2) {
+        const dx =
+          event.nativeEvent.touches[0].locationX -
+          event.nativeEvent.touches[1].locationX
+        const dy =
+          event.nativeEvent.touches[0].locationY -
+          event.nativeEvent.touches[1].locationY
+        const distance = Math.sqrt(dx * dx + dy * dy)
 
-      internals.dollyEnd.set(0, distance)
-      internals.dollyDelta.set(
-        0,
-        Math.pow(internals.dollyEnd.y / internals.dollyStart.y, scope.zoomSpeed)
-      )
-      this.dollyOut(internals.dollyDelta.y)
-      internals.dollyStart.copy(internals.dollyEnd)
+        internals.dollyEnd.set(0, distance)
+        internals.dollyDelta.set(
+          0,
+          Math.pow(
+            internals.dollyEnd.y / internals.dollyStart.y,
+            scope.zoomSpeed
+          )
+        )
+        this.dollyOut(internals.dollyDelta.y)
+        internals.dollyStart.copy(internals.dollyEnd)
+      }
     },
 
     panLeft(distance: number, objectMatrix: Matrix4) {
@@ -287,6 +251,7 @@ export function createControls() {
 
     pan(deltaX: number, deltaY: number) {
       if (!scope.camera) return
+
       const position = scope.camera.position
 
       let targetDistance = position.clone().sub(scope.target).length()
@@ -300,16 +265,23 @@ export function createControls() {
     },
 
     handleTouchMovePan(event: GestureResponderEvent) {
-      if (internals.pointers.length === 1) {
+      if (event.nativeEvent.touches.length === 1) {
         internals.panEnd.set(
           event.nativeEvent.locationX,
           event.nativeEvent.locationY
         )
-      } else {
-        const position = this.getSecondPointerPosition(event)
-        const x = 0.5 * (event.nativeEvent.locationX + position.x)
-        const y = 0.5 * (event.nativeEvent.locationY + position.y)
+      } else if (event.nativeEvent.touches.length === 2) {
+        const x =
+          0.5 *
+          (event.nativeEvent.touches[0].locationX +
+            event.nativeEvent.touches[1].locationX)
+        const y =
+          0.5 *
+          (event.nativeEvent.touches[0].locationY +
+            event.nativeEvent.touches[1].locationY)
         internals.panEnd.set(x, y)
+      } else {
+        return
       }
 
       internals.panDelta
@@ -330,30 +302,16 @@ export function createControls() {
     },
 
     onTouchMove(event: GestureResponderEvent) {
-      this.trackPointer(event)
-
       switch (internals.state) {
-        case STATE.TOUCH_ROTATE:
+        case STATE.ROTATE:
           if (!scope.enableRotate) return
           this.handleTouchMoveRotate(event)
           update()
           break
 
-        case STATE.TOUCH_PAN:
-          if (!scope.enablePan) return
-          this.handleTouchMovePan(event)
-          update()
-          break
-
-        case STATE.TOUCH_DOLLY_PAN:
+        case STATE.DOLLY:
           if (!scope.enableZoom && !scope.enablePan) return
           this.handleTouchMoveDollyPan(event)
-          update()
-          break
-
-        case STATE.TOUCH_DOLLY_ROTATE:
-          if (!scope.enableZoom && !scope.enableRotate) return
-          this.handleTouchMoveDollyRotate(event)
           update()
           break
 
@@ -456,7 +414,7 @@ export function createControls() {
       internals.scale = 1
 
       // update condition is:
-      // min(camera displacement, camera rotation in radians)^2 > EPS
+      // min(camera displacement, camera rotation in radians)^2 > EPSILON
       // using small-angle approximation cos(x/2) = 1 - x^2 / 8
 
       if (
@@ -488,38 +446,36 @@ export function createControls() {
         setHeight(event.nativeEvent.layout.height)
       },
 
-      // See https://reactnative.dev/docs/panresponder
-      ...PanResponder.create({
-        onStartShouldSetPanResponder() {
-          return scope.enabled
-        },
+      // See https://reactnative.dev/docs/gesture-responder-system
+      onStartShouldSetResponder(event: GestureResponderEvent) {
+        // On some devices this fires only for 2+ touches.
+        if (!scope.enabled) return false
 
-        onMoveShouldSetPanResponder() {
-          return scope.enabled
-        },
+        functions.onTouchStart(event)
 
-        onPanResponderGrant(event: GestureResponderEvent) {
-          functions.addPointer(event)
+        return true
+      },
 
+      onMoveShouldSetResponder(event: GestureResponderEvent) {
+        // And on the same devices this fires only for 1 touch.
+        if (!scope.enabled) return false
+
+        functions.onTouchStart(event)
+
+        return true
+      },
+
+      onResponderMove(event: GestureResponderEvent) {
+        if (internals.state !== event.nativeEvent.touches.length) {
           functions.onTouchStart(event)
-        },
+        }
 
-        onPanResponderReject(event: GestureResponderEvent) {
-          functions.removePointer(event)
-        },
+        functions.onTouchMove(event)
+      },
 
-        onPanResponderMove(event: GestureResponderEvent) {
-          if (scope.enabled && internals.pointers.length > 0) {
-            functions.onTouchMove(event)
-          }
-        },
-
-        onPanResponderRelease(event: GestureResponderEvent) {
-          functions.removePointer(event)
-
-          internals.state = STATE.NONE
-        },
-      }).panHandlers,
+      onResponderRelease() {
+        internals.state = STATE.NONE
+      },
     },
   }
 }

@@ -1,7 +1,7 @@
 /// <reference types="react" />
 import * as react_native from "react-native"
 import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
-import { PerspectiveCamera, Vector3, Vector2, Matrix4 } from "three"
+import { PerspectiveCamera, Vector3, Matrix4 } from "three"
 
 declare function createControls(): {
   scope: {
@@ -48,14 +48,10 @@ declare function createControls(): {
   }
   functions: {
     update: () => void
-    addPointer(event: GestureResponderEvent): void
-    removePointer(event: GestureResponderEvent): void
-    trackPointer(event: GestureResponderEvent): void
-    getSecondPointerPosition(event: GestureResponderEvent): Vector2
-    handleTouchStartRotate(): void
-    handleTouchStartDolly(): void
-    handleTouchStartPan(): void
-    handleTouchStartDollyPan(): void
+    handleTouchStartRotate(event: GestureResponderEvent): void
+    handleTouchStartDolly(event: GestureResponderEvent): void
+    handleTouchStartPan(event: GestureResponderEvent): void
+    handleTouchStartDollyPan(event: GestureResponderEvent): void
     onTouchStart(event: GestureResponderEvent): void
     rotateLeft(angle: number): void
     rotateUp(angle: number): void
@@ -71,19 +67,11 @@ declare function createControls(): {
     onTouchMove(event: GestureResponderEvent): void
   }
   events: {
-    onStartShouldSetResponder?: (event: GestureResponderEvent) => boolean
-    onMoveShouldSetResponder?: (event: GestureResponderEvent) => boolean
-    onResponderEnd?: (event: GestureResponderEvent) => void
-    onResponderGrant?: (event: GestureResponderEvent) => void
-    onResponderReject?: (event: GestureResponderEvent) => void
-    onResponderMove?: (event: GestureResponderEvent) => void
-    onResponderRelease?: (event: GestureResponderEvent) => void
-    onResponderStart?: (event: GestureResponderEvent) => void
-    onResponderTerminationRequest?: (event: GestureResponderEvent) => boolean
-    onResponderTerminate?: (event: GestureResponderEvent) => void
-    onStartShouldSetResponderCapture?: (event: GestureResponderEvent) => boolean
-    onMoveShouldSetResponderCapture?: (event: GestureResponderEvent) => boolean
     onLayout(event: LayoutChangeEvent): void
+    onStartShouldSetResponder(event: GestureResponderEvent): boolean
+    onMoveShouldSetResponder(event: GestureResponderEvent): boolean
+    onResponderMove(event: GestureResponderEvent): void
+    onResponderRelease(): void
   }
 }
 declare type Partial<T> = {
