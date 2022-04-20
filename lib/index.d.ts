@@ -1,8 +1,7 @@
 /// <reference types="react" />
-import * as three from "three"
-import { PerspectiveCamera, Vector3, Vector2, Matrix4 } from "three"
 import * as react_native from "react-native"
 import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
+import { PerspectiveCamera, Vector3, Vector2, Matrix4 } from "three"
 
 declare function createControls(): {
   scope: {
@@ -84,7 +83,7 @@ declare type Partial<T> = {
   [P in keyof T]?: T[P]
 }
 declare type OrbitControlsProps = Partial<
-  ReturnType<typeof createControls>["scope"]
+  Omit<ReturnType<typeof createControls>["scope"], "camera">
 >
 declare type OrbitControlsChangeEvent = Parameters<
   ReturnType<typeof createControls>["scope"]["onChange"]
@@ -101,8 +100,7 @@ declare function useControls(): readonly [
     onResponderReject(event: react_native.GestureResponderEvent): void
     onResponderMove(event: react_native.GestureResponderEvent): void
     onResponderRelease(event: react_native.GestureResponderEvent): void
-  },
-  three.PerspectiveCamera
+  }
 ]
 
-export { OrbitControlsChangeEvent, useControls as default }
+export { OrbitControlsChangeEvent, OrbitControlsProps, useControls as default }
