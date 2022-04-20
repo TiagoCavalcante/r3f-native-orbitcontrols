@@ -6,7 +6,11 @@ import {
   Vector2,
   Vector3,
 } from "three"
-import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
+import {
+  GestureResponderEvent,
+  LayoutChangeEvent,
+  PanResponder,
+} from "react-native"
 import { invalidate } from "@react-three/fiber/native"
 import { useState } from "react"
 
@@ -94,6 +98,7 @@ export function createControls() {
 
   const functions = {
     addPointer(event: GestureResponderEvent) {
+      event.persist()
       internals.pointers.push(event)
     },
 
@@ -483,36 +488,38 @@ export function createControls() {
         setHeight(event.nativeEvent.layout.height)
       },
 
-      // See https://reactnative.dev/docs/gesture-responder-system
-      onStartShouldSetResponder(event: GestureResponderEvent) {
-        return scope.enabled
-      },
+      // See https://reactnative.dev/docs/panresponder
+      ...PanResponder.create({
+        onStartShouldSetPanResponder() {
+          return scope.enabled
+        },
 
-      onMoveShouldSetResponder(event: GestureResponderEvent) {
-        if (!scope.enabled) return false
+        onMoveShouldSetPanResponder() {
+          return scope.enabled
+        },
 
-        functions.addPointer(event)
+        onPanResponderGrant(event: GestureResponderEvent) {
+          functions.addPointer(event)
 
-        functions.onTouchStart(event)
+          functions.onTouchStart(event)
+        },
 
-        return true
-      },
+        onPanResponderReject(event: GestureResponderEvent) {
+          functions.removePointer(event)
+        },
 
-      onResponderReject(event: GestureResponderEvent) {
-        functions.removePointer(event)
-      },
+        onPanResponderMove(event: GestureResponderEvent) {
+          if (scope.enabled && internals.pointers.length > 0) {
+            functions.onTouchMove(event)
+          }
+        },
 
-      onResponderMove(event: GestureResponderEvent) {
-        if (scope.enabled && internals.pointers.length > 0) {
-          functions.onTouchMove(event)
-        }
-      },
+        onPanResponderRelease(event: GestureResponderEvent) {
+          functions.removePointer(event)
 
-      onResponderRelease(event: GestureResponderEvent) {
-        functions.removePointer(event)
-
-        internals.state = STATE.NONE
-      },
+          internals.state = STATE.NONE
+        },
+      }).panHandlers,
     },
   }
 }

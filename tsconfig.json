@@ -8,11 +8,6 @@
     "noImplicitAny": true,
     "jsx": "react"
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "lib",
-    "node_modules"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["lib", "node_modules"]
 }

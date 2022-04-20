@@ -71,12 +71,19 @@ declare function createControls(): {
     onTouchMove(event: GestureResponderEvent): void
   }
   events: {
+    onStartShouldSetResponder?: (event: GestureResponderEvent) => boolean
+    onMoveShouldSetResponder?: (event: GestureResponderEvent) => boolean
+    onResponderEnd?: (event: GestureResponderEvent) => void
+    onResponderGrant?: (event: GestureResponderEvent) => void
+    onResponderReject?: (event: GestureResponderEvent) => void
+    onResponderMove?: (event: GestureResponderEvent) => void
+    onResponderRelease?: (event: GestureResponderEvent) => void
+    onResponderStart?: (event: GestureResponderEvent) => void
+    onResponderTerminationRequest?: (event: GestureResponderEvent) => boolean
+    onResponderTerminate?: (event: GestureResponderEvent) => void
+    onStartShouldSetResponderCapture?: (event: GestureResponderEvent) => boolean
+    onMoveShouldSetResponderCapture?: (event: GestureResponderEvent) => boolean
     onLayout(event: LayoutChangeEvent): void
-    onStartShouldSetResponder(event: GestureResponderEvent): boolean
-    onMoveShouldSetResponder(event: GestureResponderEvent): boolean
-    onResponderReject(event: GestureResponderEvent): void
-    onResponderMove(event: GestureResponderEvent): void
-    onResponderRelease(event: GestureResponderEvent): void
   }
 }
 declare type Partial<T> = {
@@ -92,14 +99,29 @@ declare type OrbitControlsChangeEvent = Parameters<
 declare function useControls(): readonly [
   (props: OrbitControlsProps) => JSX.Element,
   {
-    onLayout(event: react_native.LayoutChangeEvent): void
-    onStartShouldSetResponder(
+    onStartShouldSetResponder?: (
       event: react_native.GestureResponderEvent
-    ): boolean
-    onMoveShouldSetResponder(event: react_native.GestureResponderEvent): boolean
-    onResponderReject(event: react_native.GestureResponderEvent): void
-    onResponderMove(event: react_native.GestureResponderEvent): void
-    onResponderRelease(event: react_native.GestureResponderEvent): void
+    ) => boolean
+    onMoveShouldSetResponder?: (
+      event: react_native.GestureResponderEvent
+    ) => boolean
+    onResponderEnd?: (event: react_native.GestureResponderEvent) => void
+    onResponderGrant?: (event: react_native.GestureResponderEvent) => void
+    onResponderReject?: (event: react_native.GestureResponderEvent) => void
+    onResponderMove?: (event: react_native.GestureResponderEvent) => void
+    onResponderRelease?: (event: react_native.GestureResponderEvent) => void
+    onResponderStart?: (event: react_native.GestureResponderEvent) => void
+    onResponderTerminationRequest?: (
+      event: react_native.GestureResponderEvent
+    ) => boolean
+    onResponderTerminate?: (event: react_native.GestureResponderEvent) => void
+    onStartShouldSetResponderCapture?: (
+      event: react_native.GestureResponderEvent
+    ) => boolean
+    onMoveShouldSetResponderCapture?: (
+      event: react_native.GestureResponderEvent
+    ) => boolean
+    onLayout(event: react_native.LayoutChangeEvent): void
   }
 ]
 
