@@ -8,6 +8,7 @@ import {
 } from "three"
 import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 import { invalidate } from "@react-three/fiber/native"
+import { useState } from "react"
 
 const EPSILON = 0.000001
 
@@ -23,6 +24,8 @@ const STATE = {
 }
 
 export function createControls() {
+  const [height, setHeight] = useState(0)
+
   const partialScope = {
     camera: new PerspectiveCamera(75, 0, 0.1, 1000),
 
@@ -87,9 +90,6 @@ export function createControls() {
     zoomChanged: false,
 
     state: STATE.NONE,
-
-    height: 0,
-    width: 0,
   }
 
   const functions = {
@@ -237,10 +237,8 @@ export function createControls() {
         .multiplyScalar(scope.rotateSpeed)
 
       // yes, height
-      this.rotateLeft(
-        (2 * Math.PI * internals.rotateDelta.x) / internals.height
-      )
-      this.rotateUp((2 * Math.PI * internals.rotateDelta.y) / internals.height)
+      this.rotateLeft((2 * Math.PI * internals.rotateDelta.x) / height)
+      this.rotateUp((2 * Math.PI * internals.rotateDelta.y) / height)
 
       internals.rotateStart.copy(internals.rotateEnd)
     },
@@ -292,14 +290,8 @@ export function createControls() {
       targetDistance *= Math.tan(((scope.camera.fov / 2) * Math.PI) / 180.0)
 
       // we use only clientHeight here so aspect ratio does not distort speed
-      this.panLeft(
-        (2 * deltaX * targetDistance) / internals.height,
-        scope.camera.matrix
-      )
-      this.panUp(
-        (2 * deltaY * targetDistance) / internals.height,
-        scope.camera.matrix
-      )
+      this.panLeft((2 * deltaX * targetDistance) / height, scope.camera.matrix)
+      this.panUp((2 * deltaY * targetDistance) / height, scope.camera.matrix)
     },
 
     handleTouchMovePan(event: GestureResponderEvent) {
@@ -488,8 +480,7 @@ export function createControls() {
     events: {
       // Equivalent to componentDidMount.
       onLayout(event: LayoutChangeEvent) {
-        internals.height = event.nativeEvent.layout.height
-        internals.width = event.nativeEvent.layout.width
+        setHeight(event.nativeEvent.layout.height)
       },
 
       // See https://reactnative.dev/docs/gesture-responder-system

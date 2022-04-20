@@ -27,9 +27,9 @@ export default function useControls() {
   const controls = createControls()
 
   return [
-    (props: OrbitControlsProps) => {
-      return <OrbitControls controls={controls} {...props} />
-    },
+    (props: OrbitControlsProps) => (
+      <OrbitControls controls={controls} {...props} />
+    ),
     controls.events,
     controls.scope.camera,
   ] as const
