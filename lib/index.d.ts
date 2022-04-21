@@ -3,30 +3,29 @@ import * as react_native from "react-native"
 import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 import { PerspectiveCamera, Vector3, Matrix4 } from "three"
 
+declare const partialScope: {
+  camera: PerspectiveCamera
+  enabled: boolean
+  target: Vector3
+  minDistance: number
+  maxDistance: number
+  minZoom: number
+  maxZoom: number
+  minPolarAngle: number
+  maxPolarAngle: number
+  minAzimuthAngle: number
+  maxAzimuthAngle: number
+  dampingFactor: number
+  enableZoom: boolean
+  zoomSpeed: number
+  enableRotate: boolean
+  rotateSpeed: number
+  enablePan: boolean
+  panSpeed: number
+}
 declare function createControls(): {
   scope: {
-    onChange: (event: {
-      target: {
-        camera: PerspectiveCamera
-        enabled: boolean
-        target: Vector3
-        minDistance: number
-        maxDistance: number
-        minZoom: number
-        maxZoom: number
-        minPolarAngle: number
-        maxPolarAngle: number
-        minAzimuthAngle: number
-        maxAzimuthAngle: number
-        dampingFactor: number
-        enableZoom: boolean
-        zoomSpeed: number
-        enableRotate: boolean
-        rotateSpeed: number
-        enablePan: boolean
-        panSpeed: number
-      }
-    }) => void
+    onChange: (event: { target: typeof partialScope }) => void
     camera: PerspectiveCamera
     enabled: boolean
     target: Vector3

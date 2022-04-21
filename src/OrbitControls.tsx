@@ -7,6 +7,7 @@ import {
   Vector3,
 } from "three"
 import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
+import { invalidate } from "@react-three/fiber"
 import { useState } from "react"
 
 const EPSILON = 0.000001
@@ -17,44 +18,44 @@ const STATE = {
   DOLLY: 2,
 }
 
+const partialScope = {
+  camera: new PerspectiveCamera(75, 0, 0.1, 1000),
+
+  enabled: true,
+
+  target: new Vector3(),
+
+  minDistance: 0,
+  maxDistance: Infinity,
+  minZoom: 0,
+  maxZoom: Infinity,
+
+  // How far you can orbit vertically, upper and lower limits.
+  // Range is 0 to PI radians.
+  minPolarAngle: 0,
+  maxPolarAngle: Math.PI,
+
+  // How far you can orbit horizontally, upper and lower limits.
+  // If set, the interval [min, max] must be a sub-interval of
+  // [-2 PI, 2 PI], with (max - min < 2 PI)
+  minAzimuthAngle: -Infinity,
+  maxAzimuthAngle: Infinity,
+
+  // inertia
+  dampingFactor: 0.05,
+
+  enableZoom: true,
+  zoomSpeed: 1.0,
+
+  enableRotate: true,
+  rotateSpeed: 1.0,
+
+  enablePan: true,
+  panSpeed: 1.0,
+}
+
 export function createControls() {
   const [height, setHeight] = useState(0)
-
-  const partialScope = {
-    camera: new PerspectiveCamera(75, 0, 0.1, 1000),
-
-    enabled: true,
-
-    target: new Vector3(),
-
-    minDistance: 0,
-    maxDistance: Infinity,
-    minZoom: 0,
-    maxZoom: Infinity,
-
-    // How far you can orbit vertically, upper and lower limits.
-    // Range is 0 to PI radians.
-    minPolarAngle: 0,
-    maxPolarAngle: Math.PI,
-
-    // How far you can orbit horizontally, upper and lower limits.
-    // If set, the interval [min, max] must be a sub-interval of
-    // [-2 PI, 2 PI], with (max - min < 2 PI)
-    minAzimuthAngle: -Infinity,
-    maxAzimuthAngle: Infinity,
-
-    // inertia
-    dampingFactor: 0.05,
-
-    enableZoom: true,
-    zoomSpeed: 1.0,
-
-    enableRotate: true,
-    rotateSpeed: 1.0,
-
-    enablePan: true,
-    panSpeed: 1.0,
-  }
 
   const scope = {
     ...partialScope,
@@ -314,6 +315,7 @@ export function createControls() {
     const offset = new Vector3()
 
     const lastPosition = new Vector3()
+    const lastQuaternion = new Quaternion()
 
     const twoPI = 2 * Math.PI
 
@@ -401,10 +403,19 @@ export function createControls() {
 
       internals.scale = 1
 
-      if (lastPosition.distanceToSquared(scope.camera.position) > EPSILON) {
+      // update condition is:
+      // min(camera displacement, camera rotation in radians)^2 > EPSILON
+      // using small-angle approximation cos(x/2) = 1 - x^2 / 8
+      if (
+        lastPosition.distanceToSquared(scope.camera.position) > EPSILON ||
+        8 * (1 - lastQuaternion.dot(scope.camera.quaternion)) > EPSILON
+      ) {
+        invalidate()
+
         scope.onChange({ target: scope })
 
         lastPosition.copy(scope.camera.position)
+        lastQuaternion.copy(scope.camera.quaternion)
       }
     }
   })()
