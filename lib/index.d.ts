@@ -63,7 +63,6 @@ declare function createControls(): {
     pan(deltaX: number, deltaY: number): void
     handleTouchMovePan(event: GestureResponderEvent): void
     handleTouchMoveDollyPan(event: GestureResponderEvent): void
-    handleTouchMoveDollyRotate(event: GestureResponderEvent): void
     onTouchMove(event: GestureResponderEvent): void
   }
   events: {

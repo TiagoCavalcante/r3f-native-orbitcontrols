@@ -7,7 +7,6 @@ import {
   Vector3,
 } from "three"
 import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
-import { invalidate } from "@react-three/fiber/native"
 import { useState } from "react"
 
 const EPSILON = 0.000001
@@ -68,7 +67,6 @@ export function createControls() {
     rotateDelta: new Vector2(),
     dollyStart: new Vector2(),
     dollyEnd: new Vector2(),
-    dollyDelta: new Vector2(),
     panStart: new Vector2(),
     panEnd: new Vector2(),
     panDelta: new Vector2(),
@@ -78,8 +76,6 @@ export function createControls() {
     sphericalDelta: new Spherical(),
 
     scale: 1,
-
-    zoomChanged: false,
 
     state: STATE.NONE,
   }
@@ -219,14 +215,12 @@ export function createControls() {
         const distance = Math.sqrt(dx * dx + dy * dy)
 
         internals.dollyEnd.set(0, distance)
-        internals.dollyDelta.set(
-          0,
+        this.dollyOut(
           Math.pow(
             internals.dollyEnd.y / internals.dollyStart.y,
             scope.zoomSpeed
           )
         )
-        this.dollyOut(internals.dollyDelta.y)
         internals.dollyStart.copy(internals.dollyEnd)
       }
     },
@@ -296,11 +290,6 @@ export function createControls() {
       if (scope.enablePan) this.handleTouchMovePan(event)
     },
 
-    handleTouchMoveDollyRotate(event: GestureResponderEvent) {
-      if (scope.enableZoom) this.handleTouchMoveDolly(event)
-      if (scope.enableRotate) this.handleTouchMoveRotate(event)
-    },
-
     onTouchMove(event: GestureResponderEvent) {
       switch (internals.state) {
         case STATE.ROTATE:
@@ -325,7 +314,6 @@ export function createControls() {
     const offset = new Vector3()
 
     const lastPosition = new Vector3()
-    const lastQuaternion = new Quaternion()
 
     const twoPI = 2 * Math.PI
 
@@ -413,21 +401,10 @@ export function createControls() {
 
       internals.scale = 1
 
-      // update condition is:
-      // min(camera displacement, camera rotation in radians)^2 > EPSILON
-      // using small-angle approximation cos(x/2) = 1 - x^2 / 8
-
-      if (
-        internals.zoomChanged ||
-        lastPosition.distanceToSquared(scope.camera.position) > EPSILON ||
-        8 * (1 - lastQuaternion.dot(scope.camera.quaternion)) > EPSILON
-      ) {
-        invalidate()
+      if (lastPosition.distanceToSquared(scope.camera.position) > EPSILON) {
         scope.onChange({ target: scope })
 
         lastPosition.copy(scope.camera.position)
-        lastQuaternion.copy(scope.camera.quaternion)
-        internals.zoomChanged = false
       }
     }
   })()
