@@ -8,7 +8,6 @@ import {
 } from "three"
 import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 import { invalidate } from "@react-three/fiber"
-import { useState } from "react"
 
 const EPSILON = 0.000001
 
@@ -55,7 +54,7 @@ const partialScope = {
 }
 
 export function createControls() {
-  const [height, setHeight] = useState(0)
+  let height = 0
 
   const scope = {
     ...partialScope,
@@ -431,7 +430,7 @@ export function createControls() {
     events: {
       // Equivalent to componentDidMount.
       onLayout(event: LayoutChangeEvent) {
-        setHeight(event.nativeEvent.layout.height)
+        height = event.nativeEvent.layout.height
       },
 
       // See https://reactnative.dev/docs/gesture-responder-system
