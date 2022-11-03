@@ -3,7 +3,7 @@ import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 import { PerspectiveCamera, Vector3, Matrix4 } from "three"
 
 declare const partialScope: {
-  camera: PerspectiveCamera
+  camera: PerspectiveCamera | undefined
   enabled: boolean
   target: Vector3
   minDistance: number
@@ -25,7 +25,7 @@ declare const partialScope: {
 declare function createControls(): {
   scope: {
     onChange: (event: { target: typeof partialScope }) => void
-    camera: PerspectiveCamera
+    camera: PerspectiveCamera | undefined
     enabled: boolean
     target: Vector3
     minDistance: number
