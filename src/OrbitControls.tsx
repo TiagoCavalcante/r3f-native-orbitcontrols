@@ -370,10 +370,10 @@ export function createControls() {
 
       // restrict phi to be between desired limits
       internals.spherical.phi = Math.max(
-        scope.minPolarAngle,
-        Math.min(scope.maxPolarAngle, internals.spherical.phi)
+        scope.minPolarAngle + EPSILON,
+        Math.min(scope.maxPolarAngle - EPSILON, internals.spherical.phi)
       )
-      internals.spherical.makeSafe()
+
       internals.spherical.radius *= internals.scale
 
       // restrict radius to be between desired limits
