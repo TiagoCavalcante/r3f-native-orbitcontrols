@@ -15,7 +15,7 @@ function OrbitControls({ controls, ...props }: OrbitControlsInternalProps) {
   const camera = useThree((state) => state.camera)
 
   useEffect(() => {
-    if (controls.scope.camera.isPerspectiveCamera) {
+    if ((camera as PerspectiveCamera).isPerspectiveCamera) {
       controls.scope.camera = camera as PerspectiveCamera
     } else {
       throw new Error(
