@@ -33,7 +33,7 @@ function OrbitControls({ controls, ...props }: OrbitControlsInternalProps) {
 
   useFrame(controls.functions.update, -1)
 
-  return null as JSX.Element
+  return null as unknown as JSX.Element
 }
 
 export default function useControls() {

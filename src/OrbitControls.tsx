@@ -7,7 +7,7 @@ import {
   Vector3,
 } from "three"
 import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
-import { invalidate } from "@react-three/fiber"
+import { invalidate } from "@react-three/fiber/native"
 
 const EPSILON = 0.000001
 
@@ -18,7 +18,7 @@ const STATE = {
 }
 
 const partialScope = {
-  camera: new PerspectiveCamera(75, 0, 0.1, 1000),
+  camera: undefined as PerspectiveCamera | undefined,
 
   enabled: true,
 
@@ -253,7 +253,7 @@ export function createControls() {
       // half of the fov is center to top of screen
       targetDistance *= Math.tan(((scope.camera.fov / 2) * Math.PI) / 180.0)
 
-      // we use only clientHeight here so aspect ratio does not distort speed
+      // we use only height here so aspect ratio does not distort speed
       this.panLeft((2 * deltaX * targetDistance) / height, scope.camera.matrix)
       this.panUp((2 * deltaY * targetDistance) / height, scope.camera.matrix)
     },
