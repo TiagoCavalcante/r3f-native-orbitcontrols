@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as react_native from "react-native"
 import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 import { PerspectiveCamera, Vector3, Matrix4 } from "three"
@@ -85,29 +84,13 @@ declare type OrbitControlsChangeEvent = Parameters<
 declare function useControls(): readonly [
   (props: OrbitControlsProps) => JSX.Element,
   {
-    onStartShouldSetResponder?: (
-      event: react_native.GestureResponderEvent
-    ) => boolean
-    onMoveShouldSetResponder?: (
-      event: react_native.GestureResponderEvent
-    ) => boolean
-    onResponderEnd?: (event: react_native.GestureResponderEvent) => void
-    onResponderGrant?: (event: react_native.GestureResponderEvent) => void
-    onResponderReject?: (event: react_native.GestureResponderEvent) => void
-    onResponderMove?: (event: react_native.GestureResponderEvent) => void
-    onResponderRelease?: (event: react_native.GestureResponderEvent) => void
-    onResponderStart?: (event: react_native.GestureResponderEvent) => void
-    onResponderTerminationRequest?: (
-      event: react_native.GestureResponderEvent
-    ) => boolean
-    onResponderTerminate?: (event: react_native.GestureResponderEvent) => void
-    onStartShouldSetResponderCapture?: (
-      event: react_native.GestureResponderEvent
-    ) => boolean
-    onMoveShouldSetResponderCapture?: (
-      event: react_native.GestureResponderEvent
-    ) => boolean
     onLayout(event: react_native.LayoutChangeEvent): void
+    onStartShouldSetResponder(
+      event: react_native.GestureResponderEvent
+    ): boolean
+    onMoveShouldSetResponder(event: react_native.GestureResponderEvent): boolean
+    onResponderMove(event: react_native.GestureResponderEvent): void
+    onResponderRelease(): void
   }
 ]
 
