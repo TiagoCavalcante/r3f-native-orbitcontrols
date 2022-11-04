@@ -9,6 +9,17 @@
 
 OrbitControls for React Three Fiber in React Native
 
+## Install
+
+r3f-native-orbitcontrols is distributed as a [npm package](https://www.npmjs.com/package/r3f-native-orbitcontrols) and can be installed as follows:
+
+```
+// with npm
+npm install r3f-native-orbitcontrols
+// with yarn
+yarn add r3f-native-orbitcontrols
+```
+
 ## Example
 
 ```jsx
@@ -24,6 +35,8 @@ function Canvas() {
     <View {...events}>
       <Canvas>
         <OrbitControls />
+
+        {/* Place the scene elements here as usual */}
       </Canvas>
     </View>
   )
