@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import * as react_native from "react-native"
 import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 import { PerspectiveCamera, Vector3, Matrix4 } from "three"

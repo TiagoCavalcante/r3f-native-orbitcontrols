@@ -1,6 +1,24 @@
 # r3f-native-orbitcontrols
 
+<p align="center">
+<a href="https://github.com/TiagoCavalcante/r3f-native-orbitcontrols/releases"><img alt="Version" src="https://img.shields.io/npm/v/r3f-native-orbitcontrols" /></a>
+<a href="https://npmjs.com/package/r3f-native-orbitcontrols"><img alt="Downloads" src="https://img.shields.io/npm/dt/r3f-native-orbitcontrols.svg" /></a>
+<a href="https://github.com/TiagoCavalcante/r3f-native-orbitcontrols/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/npm/l/r3f-native-orbitcontrols.svg" /></a>
+<a href="https://bundlephobia.com/package/r3f-native-orbitcontrols"><img alt="Ziped size" src="https://img.shields.io/bundlephobia/minzip/r3f-native-orbitcontrols" /></a>
+</p>
+
 OrbitControls for React Three Fiber in React Native
+
+## Install
+
+r3f-native-orbitcontrols is distributed as a [npm package](https://www.npmjs.com/package/r3f-native-orbitcontrols) and can be installed as follows:
+
+```
+// with npm
+npm install r3f-native-orbitcontrols
+// with yarn
+yarn add r3f-native-orbitcontrols
+```
 
 ## Example
 
@@ -17,6 +35,8 @@ function Canvas() {
     <View {...events}>
       <Canvas>
         <OrbitControls />
+
+        {/* Place the scene elements here as usual */}
       </Canvas>
     </View>
   )
