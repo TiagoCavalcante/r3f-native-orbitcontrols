@@ -23,7 +23,7 @@ yarn add r3f-native-orbitcontrols
 ```jsx
 import useControls from "r3f-native-orbitcontrols"
 
-function Canvas() {
+function SingleCanvas() {
   const [OrbitControls, events] = useControls()
 
   return (
