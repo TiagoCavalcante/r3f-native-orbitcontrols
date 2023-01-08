@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useMemo } from "react"
 import {
   OrbitControlsChangeEvent,
   OrbitControlsProps,
@@ -37,7 +37,7 @@ function OrbitControls({ controls, ...props }: OrbitControlsInternalProps) {
 }
 
 export default function useControls() {
-  const controls = createControls()
+  const controls = useMemo(() => createControls(), [])
 
   return [
     (props: OrbitControlsProps) => (
