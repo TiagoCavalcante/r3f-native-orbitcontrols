@@ -72,13 +72,13 @@ declare function createControls(): {
     onResponderRelease(): void
   }
 }
-declare type Partial<T> = {
+type Partial<T> = {
   [P in keyof T]?: T[P]
 }
-declare type OrbitControlsProps = Partial<
+type OrbitControlsProps = Partial<
   Omit<ReturnType<typeof createControls>["scope"], "camera">
 >
-declare type OrbitControlsChangeEvent = Parameters<
+type OrbitControlsChangeEvent = Parameters<
   ReturnType<typeof createControls>["scope"]["onChange"]
 >[0]
 
