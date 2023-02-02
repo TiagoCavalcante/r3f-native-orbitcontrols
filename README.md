@@ -23,6 +23,11 @@ yarn add r3f-native-orbitcontrols
 ```jsx
 import useControls from "r3f-native-orbitcontrols"
 
+import { Canvas } from "@react-three/fiber/native"
+import { View } from "react-native"
+// The import bellow is used only in Canvases:
+import { PerspectiveCamera } from "three"
+
 function SingleCanvas() {
   const [OrbitControls, events] = useControls()
 
@@ -41,13 +46,17 @@ function SingleCanvas() {
 }
 
 function Canvases() {
-  // you also can use the same OrbitControls for multiple canvases
+  // You also can use the same OrbitControls for multiple canvases
   // creating an effect like the game
   // The Medium (https://store.steampowered.com/app/1293160)
   const [OrbitControls, events] = useControls()
 
-  // in this case the same camera must be used in all the canvases
+  // In this case the same camera must be used in all the canvases
   const camera = new PerspectiveCamera()
+  // You need to configure the camera too. Follow three.js' documentation.
+  // Default configuration:
+  //   camera.position.set(10, 10, 10)
+  //   camera.lookAt(0, 0, 0)
 
   return (
     <View {...events}>
