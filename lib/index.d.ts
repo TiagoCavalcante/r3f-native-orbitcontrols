@@ -7,8 +7,6 @@ declare const partialScope: {
   camera: PerspectiveCamera | undefined
   enabled: boolean
   target: Vector3
-  minDistance: number
-  maxDistance: number
   minZoom: number
   maxZoom: number
   minPolarAngle: number
@@ -29,8 +27,6 @@ declare function createControls(): {
     camera: PerspectiveCamera | undefined
     enabled: boolean
     target: Vector3
-    minDistance: number
-    maxDistance: number
     minZoom: number
     maxZoom: number
     minPolarAngle: number
