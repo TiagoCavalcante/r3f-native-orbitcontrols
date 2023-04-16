@@ -24,8 +24,6 @@ const partialScope = {
 
   target: new Vector3(),
 
-  minDistance: 0,
-  maxDistance: Infinity,
   minZoom: 0,
   maxZoom: Infinity,
 
@@ -378,8 +376,8 @@ export function createControls() {
 
       // restrict radius to be between desired limits
       internals.spherical.radius = Math.max(
-        scope.minDistance,
-        Math.min(scope.maxDistance, internals.spherical.radius)
+        scope.minZoom,
+        Math.min(scope.maxZoom, internals.spherical.radius)
       )
 
       // move target to panned location
