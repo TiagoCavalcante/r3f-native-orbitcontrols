@@ -1,7 +1,7 @@
-/// <reference types="react" />
-import * as react_native from "react-native"
-import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
+import * as react_native_types from "react-native/types"
+import React from "react"
 import { PerspectiveCamera, Vector3, Matrix4 } from "three"
+import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 
 declare const partialScope: {
   camera: PerspectiveCamera | undefined
@@ -79,14 +79,16 @@ type OrbitControlsChangeEvent = Parameters<
 >[0]
 
 declare function useControls(): readonly [
-  (props: OrbitControlsProps) => JSX.Element,
+  (props: OrbitControlsProps) => React.JSX.Element,
   {
-    onLayout(event: react_native.LayoutChangeEvent): void
+    onLayout(event: react_native_types.LayoutChangeEvent): void
     onStartShouldSetResponder(
-      event: react_native.GestureResponderEvent
+      event: react_native_types.GestureResponderEvent
     ): boolean
-    onMoveShouldSetResponder(event: react_native.GestureResponderEvent): boolean
-    onResponderMove(event: react_native.GestureResponderEvent): void
+    onMoveShouldSetResponder(
+      event: react_native_types.GestureResponderEvent
+    ): boolean
+    onResponderMove(event: react_native_types.GestureResponderEvent): void
     onResponderRelease(): void
   }
 ]
