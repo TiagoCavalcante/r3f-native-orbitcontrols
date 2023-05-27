@@ -63,8 +63,8 @@ export function createControls() {
     rotateStart: new Vector2(),
     rotateEnd: new Vector2(),
     rotateDelta: new Vector2(),
-    dollyStart: new Vector2(),
-    dollyEnd: new Vector2(),
+    dollyStart: 0,
+    dollyEnd: 0,
     panStart: new Vector2(),
     panEnd: new Vector2(),
     panDelta: new Vector2(),
@@ -110,7 +110,7 @@ export function createControls() {
           event.nativeEvent.touches[1].locationY
         const distance = Math.sqrt(dx * dx + dy * dy)
 
-        internals.dollyStart.set(0, distance)
+        internals.dollyStart = distance
       }
     },
 
@@ -212,14 +212,11 @@ export function createControls() {
           event.nativeEvent.touches[1].locationY
         const distance = Math.sqrt(dx * dx + dy * dy)
 
-        internals.dollyEnd.set(0, distance)
+        internals.dollyEnd = distance
         this.dollyOut(
-          Math.pow(
-            internals.dollyEnd.y / internals.dollyStart.y,
-            scope.zoomSpeed
-          )
+          Math.pow(internals.dollyEnd / internals.dollyStart, scope.zoomSpeed)
         )
-        internals.dollyStart.copy(internals.dollyEnd)
+        internals.dollyStart = internals.dollyEnd
       }
     },
 
