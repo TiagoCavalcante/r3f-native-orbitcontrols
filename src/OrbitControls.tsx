@@ -1,5 +1,6 @@
 import {
   Matrix4,
+  OrthographicCamera,
   PerspectiveCamera,
   Quaternion,
   Spherical,
@@ -18,7 +19,7 @@ const STATE = {
 }
 
 const partialScope = {
-  camera: undefined as PerspectiveCamera | undefined,
+  camera: undefined as PerspectiveCamera | OrthographicCamera | undefined,
 
   enabled: true,
 
@@ -245,8 +246,18 @@ export function createControls() {
 
       let targetDistance = position.clone().sub(scope.target).length()
 
-      // half of the fov is center to top of screen
-      targetDistance *= Math.tan(((scope.camera.fov / 2) * Math.PI) / 180.0)
+      const linearSquare =
+        // interpolate between x and x²
+        (x: number) => x + (1 - Math.exp(-x / 10000)) * (x * x - x + 1 / 4)
+
+      const distanceScale = (scope.camera as PerspectiveCamera)
+        .isPerspectiveCamera
+        ? // half of the fov is center to top of screen
+          (scope.camera as PerspectiveCamera).fov / 2
+        : // scale the zoom speed by a factor of 300
+          (1 / linearSquare(scope.camera.zoom)) * scope.zoomSpeed * 300
+
+      targetDistance *= Math.tan((distanceScale * Math.PI) / 180.0)
 
       // we use only height here so aspect ratio does not distort speed
       this.panLeft((2 * deltaX * targetDistance) / height, scope.camera.matrix)
@@ -369,7 +380,18 @@ export function createControls() {
         Math.min(scope.maxPolarAngle - EPSILON, internals.spherical.phi)
       )
 
-      internals.spherical.radius *= internals.scale
+      if ((scope.camera as PerspectiveCamera).isPerspectiveCamera) {
+        internals.spherical.radius *= internals.scale
+      } else {
+        scope.camera.zoom = Math.max(
+          Math.min(
+            scope.camera.zoom / (internals.scale * scope.zoomSpeed),
+            scope.maxZoom
+          ),
+          scope.minZoom
+        )
+        scope.camera.updateProjectionMatrix()
+      }
 
       // restrict radius to be between desired limits
       internals.spherical.radius = Math.max(

@@ -5,7 +5,7 @@ import {
   createControls,
 } from "./OrbitControls"
 import { useFrame, useThree } from "@react-three/fiber/native"
-import { PerspectiveCamera } from "three"
+import { Camera, OrthographicCamera, PerspectiveCamera } from "three"
 
 type OrbitControlsInternalProps = OrbitControlsProps & {
   controls: ReturnType<typeof createControls>
@@ -15,8 +15,11 @@ function OrbitControls({ controls, ...props }: OrbitControlsInternalProps) {
   const camera = useThree((state) => state.camera)
 
   useEffect(() => {
-    if ((camera as PerspectiveCamera).isPerspectiveCamera) {
-      controls.scope.camera = camera as PerspectiveCamera
+    if (
+      (camera as PerspectiveCamera).isPerspectiveCamera ||
+      (camera as OrthographicCamera).isOrthographicCamera
+    ) {
+      controls.scope.camera = camera as PerspectiveCamera | OrthographicCamera
     } else {
       throw new Error(
         "The camera must be a PerspectiveCamera to orbit controls work"
