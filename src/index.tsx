@@ -22,7 +22,7 @@ function OrbitControls({ controls, ...props }: OrbitControlsInternalProps) {
       controls.scope.camera = camera as PerspectiveCamera | OrthographicCamera
     } else {
       throw new Error(
-        "The camera must be a PerspectiveCamera to orbit controls work"
+        "The camera must be a PerspectiveCamera or OrthographicCamera to orbit controls work"
       )
     }
   }, [camera])
