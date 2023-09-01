@@ -1,10 +1,10 @@
 import * as react_native_types from "react-native/types"
 import React from "react"
-import { PerspectiveCamera, Vector3, Matrix4 } from "three"
+import { PerspectiveCamera, OrthographicCamera, Vector3, Matrix4 } from "three"
 import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 
 declare const partialScope: {
-  camera: PerspectiveCamera | undefined
+  camera: PerspectiveCamera | OrthographicCamera | undefined
   enabled: boolean
   target: Vector3
   minZoom: number
@@ -24,7 +24,7 @@ declare const partialScope: {
 declare function createControls(): {
   scope: {
     onChange: (event: { target: typeof partialScope }) => void
-    camera: PerspectiveCamera | undefined
+    camera: PerspectiveCamera | OrthographicCamera | undefined
     enabled: boolean
     target: Vector3
     minZoom: number
