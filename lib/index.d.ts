@@ -1,7 +1,7 @@
-import * as react_native_types from "react-native/types"
+import * as react_native from "react-native"
+import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 import React from "react"
 import { PerspectiveCamera, OrthographicCamera, Vector3, Matrix4 } from "three"
-import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 
 declare const partialScope: {
   camera: PerspectiveCamera | OrthographicCamera | undefined
@@ -43,6 +43,7 @@ declare function createControls(): {
   }
   functions: {
     update: () => void
+    shouldClaimTouch(event: GestureResponderEvent): boolean
     handleTouchStartRotate(event: GestureResponderEvent): void
     handleTouchStartDolly(event: GestureResponderEvent): void
     handleTouchStartPan(event: GestureResponderEvent): void
@@ -81,14 +82,12 @@ type OrbitControlsChangeEvent = Parameters<
 declare function useControls(): readonly [
   (props: OrbitControlsProps) => React.JSX.Element,
   {
-    onLayout(event: react_native_types.LayoutChangeEvent): void
+    onLayout(event: react_native.LayoutChangeEvent): void
     onStartShouldSetResponder(
-      event: react_native_types.GestureResponderEvent
+      event: react_native.GestureResponderEvent
     ): boolean
-    onMoveShouldSetResponder(
-      event: react_native_types.GestureResponderEvent
-    ): boolean
-    onResponderMove(event: react_native_types.GestureResponderEvent): void
+    onMoveShouldSetResponder(event: react_native.GestureResponderEvent): boolean
+    onResponderMove(event: react_native.GestureResponderEvent): void
     onResponderRelease(): void
   }
 ]
