@@ -61,6 +61,7 @@ export function createControls() {
   }
 
   const internals = {
+    moveStart: new Vector3(),
     rotateStart: new Vector2(),
     rotateEnd: new Vector2(),
     rotateDelta: new Vector2(),
@@ -80,6 +81,34 @@ export function createControls() {
   }
 
   const functions = {
+    shouldClaimTouch(event: GestureResponderEvent) {
+      // If there's 1 touch it may not be related to orbit-controls,
+      // therefore we delay "claiming" the touch.
+      if (event.nativeEvent.touches.length === 1) {
+        const {
+          locationX: x,
+          locationY: y,
+          timestamp: t,
+        } = event.nativeEvent.touches[0]
+
+        const dx = Math.abs(internals.moveStart.x - x)
+        const dy = Math.abs(internals.moveStart.y - y)
+        const dt = Math.pow(internals.moveStart.z - t, 2)
+
+        if (
+          !internals.moveStart.length() ||
+          (dx * dt <= 1000 && dy * dt <= 1000)
+        ) {
+          internals.moveStart.set(x, y, t)
+          return false
+        }
+
+        internals.moveStart.set(0, 0, 0)
+      }
+
+      return true
+    },
+
     handleTouchStartRotate(event: GestureResponderEvent) {
       if (event.nativeEvent.touches.length === 1) {
         internals.rotateStart.set(
@@ -453,7 +482,7 @@ export function createControls() {
       // See https://reactnative.dev/docs/gesture-responder-system
       onStartShouldSetResponder(event: GestureResponderEvent) {
         // On some devices this fires only for 2+ touches.
-        if (!scope.enabled) return false
+        if (!scope.enabled || !functions.shouldClaimTouch(event)) return false
 
         functions.onTouchStart(event)
 
@@ -462,7 +491,7 @@ export function createControls() {
 
       onMoveShouldSetResponder(event: GestureResponderEvent) {
         // And on the same devices this fires only for 1 touch.
-        if (!scope.enabled) return false
+        if (!scope.enabled || !functions.shouldClaimTouch(event)) return false
 
         functions.onTouchStart(event)
 
