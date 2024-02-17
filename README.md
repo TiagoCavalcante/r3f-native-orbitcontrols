@@ -98,9 +98,9 @@ The `<OrbitControls />` element _may_ receive the following properties:
 | ignoreQuickPress |     boolean     |                   may cause bugs when enabled\* |
 | onChange         | (event) => void | receives an event with all the properties above |
 
-You can find the defaults for each option [here](...).
+You can find the defaults for each option [here](https://github.com/TiagoCavalcante/r3f-native-orbitcontrols/blob/7468e516a17c279f65b2f6a681d1aa6e655b6746/src/OrbitControls.tsx#L21-L55).
 
-\*: This option is **not** recommended in modern devices. It's only useful in older devices, which don't propagate touch events to prevent "bubbling". You can find more information about this [here](...).
+\*: This option is **not** recommended in modern devices. It's only useful in older devices, which don't propagate touch events to prevent "bubbling". You can find more information about this [here](https://github.com/TiagoCavalcante/r3f-native-orbitcontrols/blob/7468e516a17c279f65b2f6a681d1aa6e655b6746/src/OrbitControls.tsx#L87-L120).
 
 ## Why not use [drei](https://github.com/pmndrs/drei)'s OrbitControls?
 
