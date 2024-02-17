@@ -1,6 +1,6 @@
 {
   "name": "r3f-native-orbitcontrols",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "OrbitControls for React Three Fiber in React Native",
   "main": "lib/index.cjs.js",
   "module": "lib/index.esm.js",
@@ -11,7 +11,8 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "r3f",
@@ -28,19 +29,19 @@
     "three": ">=0.139.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^24.1.0",
-    "@rollup/plugin-node-resolve": "^15.0.2",
-    "@types/react": "^18.0.35",
-    "@types/react-native": "^0.71.5",
-    "@types/three": "^0.150.1",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.2.1",
-    "prettier": "^2.8.7",
-    "rollup": "^3.20.3",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@types/react": "^18.2.56",
+    "@types/react-native": "^0.72.8",
+    "@types/three": "^0.161.2",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5",
+    "rollup": "^4.12.0",
     "rollup-plugin-delete": "^2.0.0",
-    "rollup-plugin-dts": "^5.3.0",
-    "rollup-plugin-typescript2": "^0.34.1",
-    "typescript": "^5.0.4"
+    "rollup-plugin-dts": "^6.1.0",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "typescript": "^5.3.3"
   },
   "lint-staged": {
     "*.{ts,tsx,md}": "prettier --write --no-semi"

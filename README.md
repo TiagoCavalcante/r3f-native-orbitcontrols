@@ -5,7 +5,7 @@
 <a href="https://github.com/TiagoCavalcante/r3f-native-orbitcontrols/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/npm/l/r3f-native-orbitcontrols.svg" /></a>
 <a href="https://bundlephobia.com/package/r3f-native-orbitcontrols"><img alt="Ziped size" src="https://img.shields.io/bundlephobia/minzip/r3f-native-orbitcontrols" /></a>
 
-OrbitControls for React Three Fiber in React Native
+OrbitControls for [React Three Fiber](https://github.com/pmndrs/react-three-fiber) in React Native
 
 ## Install
 
@@ -25,7 +25,7 @@ import useControls from "r3f-native-orbitcontrols"
 
 import { Canvas } from "@react-three/fiber/native"
 import { View } from "react-native"
-// The import bellow is used only in Canvases:
+// The import below is used only in Canvases:
 import { PerspectiveCamera } from "three"
 
 function SingleCanvas() {
@@ -33,7 +33,7 @@ function SingleCanvas() {
 
   return (
     // If this isn't working check if you have set the size of the View.
-    // The easiest way to do it is use the full size, e.g.:
+    // The easiest way to do it is to use the full size, e.g.:
     //   <View style={{ flex: 1 }} />
     <View {...events}>
       <Canvas>
@@ -71,26 +71,37 @@ function Canvases() {
 }
 ```
 
+You can find an example app [here](https://github.com/TiagoCavalcante/r3f-orbitcontrols-example).
+
 ## Options
 
 The `<OrbitControls />` element _may_ receive the following properties:
 
-| Property        |      Type       |                                     Description |
-| :-------------- | :-------------: | ----------------------------------------------: |
-| camera          |     Camera      |                 readonly, available to onChange |
-| enabled         |     boolean     |                                                 |
-| target          |     Vector3     |                                                 |
-| minPolarAngle   |     number      |              how close you can orbit vertically |
-| maxPolarAngle   |     number      |                how far you can orbit vertically |
-| minAzimuthAngle |     number      |            how close you can orbit horizontally |
-| maxAzimuthAngle |     number      |              how far you can orbit horizontally |
-| dampingFactor   |     number      |                                  inertia factor |
-| enableZoom      |     boolean     |                                                 |
-| zoomSpeed       |     number      |                                                 |
-| minZoom         |     number      |                                                 |
-| maxZoom         |     number      |                                                 |
-| enableRotate    |     boolean     |                                                 |
-| rotateSpeed     |     number      |                                                 |
-| enablePan       |     boolean     |                                                 |
-| panSpeed        |     number      |                                                 |
-| onChange        | (event) => void | receives an event with all the properties above |
+| Property         |      Type       |                                     Description |
+| :--------------- | :-------------: | ----------------------------------------------: |
+| camera           |     Camera      |                read-only, available to onChange |
+| enabled          |     boolean     |                                                 |
+| target           |     Vector3     |                                                 |
+| minPolarAngle    |     number      |              how close you can orbit vertically |
+| maxPolarAngle    |     number      |                how far you can orbit vertically |
+| minAzimuthAngle  |     number      |            how close you can orbit horizontally |
+| maxAzimuthAngle  |     number      |              how far you can orbit horizontally |
+| dampingFactor    |     number      |                                  inertia factor |
+| enableZoom       |     boolean     |                                                 |
+| zoomSpeed        |     number      |                                                 |
+| minZoom          |     number      |                                                 |
+| maxZoom          |     number      |                                                 |
+| enableRotate     |     boolean     |                                                 |
+| rotateSpeed      |     number      |                                                 |
+| enablePan        |     boolean     |                                                 |
+| panSpeed         |     number      |                                                 |
+| ignoreQuickPress |     boolean     |                   may cause bugs when enabled\* |
+| onChange         | (event) => void | receives an event with all the properties above |
+
+You can find the defaults for each option [here](...).
+
+\*: This option is **not** recommended in modern devices. It's only useful in older devices, which don't propagate touch events to prevent "bubbling". You can find more information about this [here](...).
+
+## Why not use [drei](https://github.com/pmndrs/drei)'s OrbitControls?
+
+The answer is very simple: they don't work on native, only on the web and (much) older versions of [React Three Fiber](https://github.com/pmndrs/react-three-fiber).
