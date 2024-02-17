@@ -20,6 +20,7 @@ declare const partialScope: {
   rotateSpeed: number
   enablePan: boolean
   panSpeed: number
+  ignoreQuickPress: boolean
 }
 declare function createControls(): {
   scope: {
@@ -40,6 +41,7 @@ declare function createControls(): {
     rotateSpeed: number
     enablePan: boolean
     panSpeed: number
+    ignoreQuickPress: boolean
   }
   functions: {
     update: () => void
@@ -84,12 +86,16 @@ declare function useControls(): readonly [
   {
     onLayout(event: react_native.LayoutChangeEvent): void
     onStartShouldSetResponder(
-      event: react_native.GestureResponderEvent
+      event: react_native.GestureResponderEvent,
     ): boolean
     onMoveShouldSetResponder(event: react_native.GestureResponderEvent): boolean
     onResponderMove(event: react_native.GestureResponderEvent): void
     onResponderRelease(): void
-  }
+  },
 ]
 
-export { OrbitControlsChangeEvent, OrbitControlsProps, useControls as default }
+export {
+  type OrbitControlsChangeEvent,
+  type OrbitControlsProps,
+  useControls as default,
+}
