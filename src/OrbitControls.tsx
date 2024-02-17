@@ -50,6 +50,8 @@ const partialScope = {
 
   enablePan: true,
   panSpeed: 1.0,
+
+  ignoreQuickPress: false,
 }
 
 export function createControls() {
@@ -82,8 +84,42 @@ export function createControls() {
 
   const functions = {
     shouldClaimTouch(event: GestureResponderEvent) {
-      // If there's 1 touch it may not be related to orbit-controls,
-      // therefore we delay "claiming" the touch.
+      // If there's 1 touch it may not be related to orbit controls,
+      // therefore we delay "claiming" the touch, as on older devices this stops the
+      // event propagation to prevent bubbling.
+      // This option is disabled by default because on newer devices (I tested on
+      // Android 8+ and iOS 15+) this behavior is (happily) inexistent (the
+      // propagation only stops if the code explicitly tells it to do so).
+      // See https://github.com/TiagoCavalcante/r3f-native-orbitcontrols/issues/27
+      // Unfortunately, this feature may cause bugs in newer devices or browsers,
+      // where the first presses (quick or long) aren't detected.
+      // See https://github.com/TiagoCavalcante/r3f-native-orbitcontrols/issues/30
+      // See https://github.com/TiagoCavalcante/r3f-native-orbitcontrols/issues/31
+      // Therefore it is **not** recommended to enable it if you are targeting newer
+      // devices.
+      // There are other options to fix this behavior on older devices:
+      //   1. Use the events `onTouchStart`, `onTouchMove`, `onTouchEnd`,
+      //      `onTouchCancel` from @react-three/fiber's `Canvas`. I didn't choose this
+      //      option because it seems to be slower than using the gesture responder
+      //      system directly, and it would also make it harder to use these events
+      //      in the `Canvas`.
+      //   2. Add a transparent `Plane` that covers the whole screen and use its
+      //      touch events, which are exposed by @react-three/fiber. I didn't choose
+      //      this option because it would hurt performance and just seems to be too
+      //      hacky.
+      //   3. Use `View`'s `onTouchStart`, `onTouchMove`, etc. I think this would have
+      //      the same behavior in older devices, but I still didn't test it. If you
+      //      want me to test it, please just open an issue.
+      // Note that using @react-three/fiber's
+      // `useThree().gl.domElement.addEventListener` doesn't work, just look at the
+      // code of the function:
+      // https://github.com/pmndrs/react-three-fiber/blob/6c830bd793cfd15d980299f2582f8a70cc53e30c/packages/fiber/src/native/Canvas.tsx#L83-L84
+      // Ideally, this should be fixed by implementing something like an
+      // `addEventListener`-like in @react-three/fiber.
+      // I have suggested this feature here:
+      // https://github.com/pmndrs/react-three-fiber/issues/3173
+      if (!scope.ignoreQuickPress) return true
+
       if (event.nativeEvent.touches.length === 1) {
         const {
           locationX: x,
