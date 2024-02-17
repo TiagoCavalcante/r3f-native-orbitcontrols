@@ -256,9 +256,12 @@ export function createControls() {
         .subVectors(internals.rotateEnd, internals.rotateStart)
         .multiplyScalar(scope.rotateSpeed)
 
-      // yes, height
-      this.rotateLeft((2 * Math.PI * internals.rotateDelta.x) / height)
-      this.rotateUp((2 * Math.PI * internals.rotateDelta.y) / height)
+      // Avoid division by 0.
+      if (height) {
+        // yes, height
+        this.rotateLeft((2 * Math.PI * internals.rotateDelta.x) / height)
+        this.rotateUp((2 * Math.PI * internals.rotateDelta.y) / height)
+      }
 
       internals.rotateStart.copy(internals.rotateEnd)
     },
@@ -324,9 +327,15 @@ export function createControls() {
 
       targetDistance *= Math.tan((distanceScale * Math.PI) / 180.0)
 
-      // we use only height here so aspect ratio does not distort speed
-      this.panLeft((2 * deltaX * targetDistance) / height, scope.camera.matrix)
-      this.panUp((2 * deltaY * targetDistance) / height, scope.camera.matrix)
+      // Avoid division by 0.
+      if (height) {
+        // we use only height here so aspect ratio does not distort speed
+        this.panLeft(
+          (2 * deltaX * targetDistance) / height,
+          scope.camera.matrix
+        )
+        this.panUp((2 * deltaY * targetDistance) / height, scope.camera.matrix)
+      }
     },
 
     handleTouchMovePan(event: GestureResponderEvent) {
