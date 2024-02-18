@@ -2,9 +2,15 @@
   "name": "r3f-native-orbitcontrols",
   "version": "1.0.10",
   "description": "OrbitControls for React Three Fiber in React Native",
-  "main": "lib/index.cjs.js",
-  "module": "lib/index.esm.js",
-  "types": "lib/index.d.ts",
+  "type": "module",
+  "types": "./lib/index.d.ts",
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.esm.js",
+  "exports": {
+    "types": "./lib/index.d.ts",
+    "require": "./lib/index.cjs",
+    "default": "./lib/index.esm.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/TiagoCavalcante/r3f-native-orbitcontrols"
