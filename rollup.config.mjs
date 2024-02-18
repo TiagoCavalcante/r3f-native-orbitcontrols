@@ -11,7 +11,7 @@ const config = [
     input: "./src/index.tsx",
     output: [
       {
-        file: "./lib/index.cjs.js",
+        file: "./lib/index.cjs",
         format: "cjs",
       },
       {
