@@ -5,7 +5,7 @@ import {
   createControls,
 } from "./OrbitControls"
 import { useFrame, useThree } from "@react-three/fiber/native"
-import { Camera, OrthographicCamera, PerspectiveCamera } from "three"
+import { OrthographicCamera, PerspectiveCamera } from "three"
 
 type OrbitControlsInternalProps = OrbitControlsProps & {
   controls: ReturnType<typeof createControls>

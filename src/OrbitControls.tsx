@@ -23,8 +23,6 @@ const partialScope = {
 
   enabled: true,
 
-  target: new Vector3(),
-
   minZoom: 0,
   maxZoom: Infinity,
 
@@ -59,6 +57,7 @@ export function createControls() {
 
   const scope = {
     ...partialScope,
+    target: new Vector3(),
     onChange: (event: { target: typeof partialScope }) => {},
   }
 
