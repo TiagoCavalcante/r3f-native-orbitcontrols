@@ -2,13 +2,13 @@ import React, { useEffect, useMemo } from "react"
 import {
   OrbitControlsChangeEvent,
   OrbitControlsProps,
-  createControls,
+  useCreateControls,
 } from "./OrbitControls"
 import { useFrame, useThree } from "@react-three/fiber/native"
 import { OrthographicCamera, PerspectiveCamera } from "three"
 
 type OrbitControlsInternalProps = OrbitControlsProps & {
-  controls: ReturnType<typeof createControls>
+  controls: ReturnType<typeof useCreateControls>
 }
 
 function OrbitControls({ controls, ...props }: OrbitControlsInternalProps) {
@@ -40,7 +40,7 @@ function OrbitControls({ controls, ...props }: OrbitControlsInternalProps) {
 }
 
 export default function useControls() {
-  const controls = useMemo(() => createControls(), [])
+  const controls = useCreateControls()
 
   return [
     (props: OrbitControlsProps) => (
