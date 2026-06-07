@@ -1,13 +1,12 @@
+import { useFrame, useThree } from "@react-three/fiber/native"
 import React, { useEffect, useMemo } from "react"
+import { OrthographicCamera, PerspectiveCamera } from "three"
 import {
   ControlsChangeEvent,
+  ControlsMode,
   ControlsProps,
   createControls,
-  CONTROLMODES,
-  ControlMode,
 } from "./Controls"
-import { useFrame, useThree } from "@react-three/fiber/native"
-import { OrthographicCamera, PerspectiveCamera } from "three"
 
 type ControlsInternalProps = ControlsProps & {
   controls: ReturnType<typeof createControls>
@@ -41,7 +40,7 @@ function Controls({ controls, ...props }: ControlsInternalProps) {
   return null
 }
 
-export default function useControls(mode: ControlMode = "orbit") {
+export default function useControls(mode = ControlsMode.ORBIT) {
   const controls = useMemo(() => createControls(mode), [mode])
   return [
     (props: ControlsProps) => <Controls controls={controls} {...props} />,
@@ -49,4 +48,4 @@ export default function useControls(mode: ControlMode = "orbit") {
   ] as const
 }
 
-export { ControlsChangeEvent, ControlsProps, ControlMode, CONTROLMODES }
+export { ControlsChangeEvent, ControlsMode, ControlsProps }

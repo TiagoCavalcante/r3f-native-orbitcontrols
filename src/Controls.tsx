@@ -1,3 +1,5 @@
+import { invalidate } from "@react-three/fiber/native"
+import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 import {
   Matrix4,
   OrthographicCamera,
@@ -7,19 +9,15 @@ import {
   Vector2,
   Vector3,
 } from "three"
-import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
-import { invalidate } from "@react-three/fiber/native"
 
 const EPSILON = 0.000001
 const ZOOM_SPEED_THRESHOLD = 0.5
 const ROTATION_THRESHOLD = 0.01
 
-export const CONTROLMODES = {
-  ORBIT: "orbit",
-  MAP: "map",
-} as const
-
-export type ControlMode = (typeof CONTROLMODES)[keyof typeof CONTROLMODES]
+export const enum ControlsMode {
+  ORBIT = "orbit",
+  MAP = "map",
+}
 
 const partialScope = {
   camera: undefined as PerspectiveCamera | OrthographicCamera | undefined,
@@ -66,27 +64,27 @@ function getShortestAngle(from: number, to: number): number {
   return diff < -Math.PI ? diff + 2 * Math.PI : diff
 }
 
-export function createControls(mode: ControlMode = CONTROLMODES.ORBIT) {
+export function createControls(mode = ControlsMode.ORBIT) {
   let height = 0
 
   const STATE =
-    mode === CONTROLMODES.MAP
+    mode === ControlsMode.MAP
       ? {
-          NONE: 0,
-          PAN: 1,
-          ROTATE_OR_ZOOM: 2,
-        }
+        NONE: 0,
+        PAN: 1,
+        ROTATE_OR_ZOOM: 2,
+      }
       : {
-          NONE: 0,
-          ROTATE: 1,
-          DOLLY: 2,
-        }
+        NONE: 0,
+        ROTATE: 1,
+        DOLLY: 2,
+      }
 
   const scope = {
     ...partialScope,
     mode,
     target: new Vector3(),
-    onChange: (event: { target: typeof partialScope }) => {},
+    onChange: (event: { target: typeof partialScope }) => { },
   }
 
   const internals = {
@@ -241,13 +239,13 @@ export function createControls(mode: ControlMode = CONTROLMODES.ORBIT) {
     onTouchStart(event: GestureResponderEvent) {
       if (!scope.enabled) return
 
-      if (scope.mode === CONTROLMODES.MAP) {
+      if (scope.mode === ControlsMode.MAP) {
         switch (event.nativeEvent.touches.length) {
           case 1:
-            if (scope.enablePan) {
-              this.handleTouchStartPan(event)
-              internals.state = STATE.PAN!
-            }
+            if (!scope.enablePan) return
+            this.handleTouchStartPan(event)
+            internals.state = STATE.PAN!
+
             break
 
           case 2:
@@ -262,10 +260,10 @@ export function createControls(mode: ControlMode = CONTROLMODES.ORBIT) {
       } else {
         switch (event.nativeEvent.touches.length) {
           case 1:
-            if (scope.enableRotate) {
-              this.handleTouchStartRotate(event)
-              internals.state = STATE.ROTATE!
-            }
+            if (!scope.enableRotate) return
+            this.handleTouchStartRotate(event)
+            internals.state = STATE.ROTATE!
+
             break
 
           case 2:
@@ -428,32 +426,34 @@ export function createControls(mode: ControlMode = CONTROLMODES.ORBIT) {
 
       switch (internals.state) {
         case STATE.ROTATE:
-          if (scope.mode === CONTROLMODES.ORBIT && scope.enableRotate) {
-            this.handleTouchMoveRotate(event)
-            update()
-          }
+          if (scope.mode === ControlsMode.ORBIT) return
+          if (!scope.enableRotate) return
+          this.handleTouchMoveRotate(event)
+          update()
+
           break
 
         case STATE.DOLLY:
-          if (scope.mode === CONTROLMODES.ORBIT) {
-            if (scope.enableZoom) this.handleTouchMoveDolly(event)
-            if (scope.enablePan) this.handleTouchMovePan(event)
-            update()
-          }
+          if (scope.mode !== ControlsMode.ORBIT) return
+          if (!scope.enableZoom && !scope.enablePan) return
+          this.handleTouchMoveDollyPan(event)
+          update()
+
           break
 
         case STATE.PAN:
-          if (scope.mode === CONTROLMODES.MAP && scope.enablePan) {
-            this.handleTouchMovePan(event)
-            update()
-          }
+          if (scope.mode !== ControlsMode.MAP) return
+          if (!scope.enablePan) return
+          this.handleTouchMovePan(event)
+          update()
+
           break
 
         case STATE.ROTATE_OR_ZOOM:
-          if (scope.mode === CONTROLMODES.MAP) {
-            this.handleTouchMoveRotateOrZoom(event)
-            update()
-          }
+          if (scope.mode !== ControlsMode.MAP) return
+          this.handleTouchMoveRotateOrZoom(event)
+          update()
+
           break
 
         default:
