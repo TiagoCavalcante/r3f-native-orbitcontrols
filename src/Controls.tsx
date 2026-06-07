@@ -1,4 +1,5 @@
 import { invalidate } from "@react-three/fiber/native"
+import { useState } from "react"
 import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 import {
   Matrix4,
@@ -64,8 +65,8 @@ function getShortestAngle(from: number, to: number): number {
   return diff < -Math.PI ? diff + 2 * Math.PI : diff
 }
 
-export function createControls(mode = ControlsMode.ORBIT) {
-  let height = 0
+export function useCreateControls(mode: ControlsMode) {
+  const [height, setHeight] = useState(0)
 
   const STATE =
     mode === ControlsMode.MAP
@@ -80,12 +81,12 @@ export function createControls(mode = ControlsMode.ORBIT) {
         DOLLY: 2,
       }
 
-  const scope = {
+  const [scope] = useState(() => ({
     ...partialScope,
     mode,
     target: new Vector3(),
     onChange: (event: { target: typeof partialScope }) => { },
-  }
+  }))
 
   const internals = {
     moveStart: new Vector3(),
@@ -661,7 +662,7 @@ export function createControls(mode = ControlsMode.ORBIT) {
     events: {
       // Equivalent to componentDidMount.
       onLayout(event: LayoutChangeEvent) {
-        height = event.nativeEvent.layout.height
+        setHeight(event.nativeEvent.layout.height)
       },
 
       // See https://reactnative.dev/docs/gesture-responder-system
@@ -704,9 +705,11 @@ type Partial<T> = {
 
 // Update type definitions
 export type ControlsProps = Partial<
-  Omit<ReturnType<typeof createControls>["scope"], "camera">
+  Omit<ReturnType<typeof useCreateControls>["scope"], "camera">
 >
 
 export type ControlsChangeEvent = Parameters<
-  ReturnType<typeof createControls>["scope"]["onChange"]
+  ReturnType<typeof useCreateControls>["scope"]["onChange"]
 >[0]
+
+

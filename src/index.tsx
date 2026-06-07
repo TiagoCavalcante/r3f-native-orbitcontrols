@@ -5,11 +5,11 @@ import {
   ControlsChangeEvent,
   ControlsMode,
   ControlsProps,
-  createControls,
+  useCreateControls,
 } from "./Controls"
 
 type ControlsInternalProps = ControlsProps & {
-  controls: ReturnType<typeof createControls>
+  controls: ReturnType<typeof useCreateControls>
 }
 
 function Controls({ controls, ...props }: ControlsInternalProps) {
@@ -41,7 +41,8 @@ function Controls({ controls, ...props }: ControlsInternalProps) {
 }
 
 export default function useControls(mode = ControlsMode.ORBIT) {
-  const controls = useMemo(() => createControls(mode), [mode])
+  const controls = useMemo(() => useCreateControls(mode), [mode])
+
   return [
     (props: ControlsProps) => <Controls controls={controls} {...props} />,
     controls.events,
