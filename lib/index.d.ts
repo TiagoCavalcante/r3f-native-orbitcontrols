@@ -3,6 +3,10 @@ import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 import React from "react"
 import { Vector3, PerspectiveCamera, OrthographicCamera, Matrix4 } from "three"
 
+declare const enum ControlsMode {
+  ORBIT = "orbit",
+  MAP = "map",
+}
 declare const partialScope: {
   camera: PerspectiveCamera | OrthographicCamera | undefined
   enabled: boolean
@@ -22,8 +26,9 @@ declare const partialScope: {
   panSpeed: number
   ignoreQuickPress: boolean
 }
-declare function createControls(): {
+declare function useCreateControls(mode: ControlsMode): {
   scope: {
+    mode: ControlsMode
     target: Vector3
     onChange: (event: { target: typeof partialScope }) => void
     camera: PerspectiveCamera | OrthographicCamera | undefined
@@ -62,6 +67,8 @@ declare function createControls(): {
     handleTouchMovePan(event: GestureResponderEvent): void
     handleTouchMoveDollyPan(event: GestureResponderEvent): void
     onTouchMove(event: GestureResponderEvent): void
+    handleTouchStartRotateOrZoom(event: GestureResponderEvent): void
+    handleTouchMoveRotateOrZoom(event: GestureResponderEvent): void
   }
   events: {
     onLayout(event: LayoutChangeEvent): void
@@ -74,15 +81,15 @@ declare function createControls(): {
 type Partial<T> = {
   [P in keyof T]?: T[P]
 }
-type OrbitControlsProps = Partial<
-  Omit<ReturnType<typeof createControls>["scope"], "camera">
+type ControlsProps = Partial<
+  Omit<ReturnType<typeof useCreateControls>["scope"], "camera">
 >
-type OrbitControlsChangeEvent = Parameters<
-  ReturnType<typeof createControls>["scope"]["onChange"]
+type ControlsChangeEvent = Parameters<
+  ReturnType<typeof useCreateControls>["scope"]["onChange"]
 >[0]
 
-declare function useControls(): readonly [
-  (props: OrbitControlsProps) => React.JSX.Element,
+declare function useControls(mode?: ControlsMode): readonly [
+  (props: ControlsProps) => React.JSX.Element,
   {
     onLayout(event: react_native.LayoutChangeEvent): void
     onStartShouldSetResponder(
@@ -95,7 +102,8 @@ declare function useControls(): readonly [
 ]
 
 export {
-  type OrbitControlsChangeEvent,
-  type OrbitControlsProps,
+  type ControlsChangeEvent,
+  ControlsMode,
+  type ControlsProps,
   useControls as default,
 }
