@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo } from "react"
+import { useFrame, useThree } from "@react-three/fiber/native"
+import React, { useEffect } from "react"
+import { OrthographicCamera, PerspectiveCamera } from "three"
 import {
   OrbitControlsChangeEvent,
   OrbitControlsProps,
   useCreateControls,
 } from "./OrbitControls"
-import { useFrame, useThree } from "@react-three/fiber/native"
-import { OrthographicCamera, PerspectiveCamera } from "three"
 
 type OrbitControlsInternalProps = OrbitControlsProps & {
   controls: ReturnType<typeof useCreateControls>

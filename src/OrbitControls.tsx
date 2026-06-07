@@ -1,3 +1,6 @@
+import { invalidate } from "@react-three/fiber/native"
+import { useState } from "react"
+import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
 import {
   Matrix4,
   OrthographicCamera,
@@ -7,8 +10,6 @@ import {
   Vector2,
   Vector3,
 } from "three"
-import { GestureResponderEvent, LayoutChangeEvent } from "react-native"
-import { invalidate } from "@react-three/fiber/native"
 
 const EPSILON = 0.000001
 
@@ -63,7 +64,7 @@ export function useCreateControls() {
   const scope = {
     ...partialScope,
     target: new Vector3(),
-    onChange: (event: { target: typeof partialScope }) => {},
+    onChange: (event: { target: typeof partialScope }) => { },
   }
 
   const internals = {
@@ -573,7 +574,5 @@ export type OrbitControlsProps = Partial<
 export type OrbitControlsChangeEvent = Parameters<
   ReturnType<typeof useCreateControls>["scope"]["onChange"]
 >[0]
-function useState(arg0: number): [any, any] {
-  throw new Error("Function not implemented.")
-}
+
 
