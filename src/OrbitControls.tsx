@@ -61,11 +61,11 @@ const partialScope = {
 export function useCreateControls() {
   const [height, setHeight] = useState(0)
 
-  const scope = {
+  const [scope] = useState(() => ({
     ...partialScope,
     target: new Vector3(),
     onChange: (event: { target: typeof partialScope }) => { },
-  }
+  }))
 
   const internals = {
     moveStart: new Vector3(),
