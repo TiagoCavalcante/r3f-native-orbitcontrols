@@ -73,9 +73,39 @@ function Canvases() {
 
 You can find an example app [here](https://github.com/TiagoCavalcante/r3f-orbitcontrols-example).
 
+## Modes
+
+`useControls()` uses orbit mode by default. To use the current map mode, pass
+`ControlsMode.MAP`:
+
+```jsx
+import useControls, { ControlsMode } from "r3f-native-orbitcontrols"
+
+import { Canvas } from "@react-three/fiber/native"
+import { View } from "react-native"
+
+function MapCanvas() {
+  const [MapControls, events] = useControls(ControlsMode.MAP)
+
+  return (
+    <View {...events}>
+      <Canvas>
+        <MapControls />
+
+        {/* Place the scene elements here as usual */}
+      </Canvas>
+    </View>
+  )
+}
+```
+
+In map mode, one finger pans the camera. Two fingers can zoom, rotate, and tilt
+the camera around the target.
+
 ## Options
 
-The `<OrbitControls />` element _may_ receive the following properties:
+The controls element returned by `useControls()` _may_ receive the following
+properties:
 
 | Property         |      Type       |                                     Description |
 | :--------------- | :-------------: | ----------------------------------------------: |

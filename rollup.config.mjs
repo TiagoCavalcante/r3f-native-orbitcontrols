@@ -27,7 +27,10 @@ const config = [
     plugins: [
       nodeResolve(),
       commonjs(),
-      typescript({ tsconfig: "./tsconfig.json" }),
+      typescript({
+        tsconfig: "./tsconfig.json",
+        include: ["*.ts", "*.tsx", "**/*.ts", "**/*.tsx"],
+      }),
     ],
   },
   {
@@ -36,7 +39,7 @@ const config = [
     plugins: [
       dts(),
       del({
-        targets: ["./lib/OrbitControls.d.ts"],
+        targets: ["./lib/Controls.d.ts"],
         hook: "buildEnd",
       }),
     ],
